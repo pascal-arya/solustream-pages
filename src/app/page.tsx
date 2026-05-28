@@ -1,3 +1,5 @@
-import SatisfactionFormsPage from "./satisfaction-forms/page";
+import { redirect } from "next/navigation";
 
-export default SatisfactionFormsPage;
+export default function Home() {
+  redirect("/satisfaction-forms");
+}
