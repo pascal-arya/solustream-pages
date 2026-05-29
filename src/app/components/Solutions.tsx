@@ -13,21 +13,21 @@ export default function Solutions() {
     },
     {
       id: 2,
-      image: '/Assets/Landing Page/Solusi Img/Mask group (1).png',
+      image: '/Assets/Landing Page/Solusi Img/Mask group.png',
       titleImage: '/Assets/Landing Page/Group 2607808.png',
       altText: 'Sales & Commerce',
       description: 'Ubah penonton menjadi pembeli dengan live multi-platform',
     },
     {
       id: 3,
-      image: '/Assets/Landing Page/Solusi Img/Mask group (2).png',
+      image: '/Assets/Landing Page/Solusi Img/Mask group (1).png',
       titleImage: '/Assets/Landing Page/Group 2607809.png',
       altText: 'Event & Entertainment',
       description: 'Siarkan keseruan konser, festival, dan acara hiburan secara real-time',
     },
     {
       id: 4,
-      image: '/Assets/Landing Page/Solusi Img/Mask group.png',
+      image: '/Assets/Landing Page/Solusi Img/Mask group (2).png',
       titleImage: '/Assets/Landing Page/Group 2607810.png',
       altText: 'Custom Solutions',
       description: 'Solusi penyiaran khusus yang disesuaikan dengan kebutuhan unik event Anda',
@@ -46,7 +46,10 @@ export default function Solutions() {
 
         <div className="solutions-grid">
           {cards.map((card) => (
-            <div key={card.id} className="solution-card">
+            <div
+              key={card.id}
+              className={`solution-card ${card.id === 4 ? 'custom-solution-card' : ''}`}
+            >
               <div className="solution-card-image-wrapper">
                 <Image
                   src={card.image}

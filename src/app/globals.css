@@ -605,11 +605,11 @@ button {
 /* Shared Footer Styles */
 .global-footer {
   width: 100%;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
   padding: 48px 0;
   margin-top: 80px;
-  background: linear-gradient(to top right, #02002e 0%, #031e61 100%);
-  color: #ffffff;
+  background: #ffffff;
+  color: #111827;
   display: flex;
   justify-content: center;
 }
@@ -645,7 +645,7 @@ button {
 
 .footer-copyright {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.6);
+  color: #6b7280;
   font-weight: 400;
 }
 
@@ -665,7 +665,7 @@ button {
   font-size: 14px;
   text-transform: uppercase;
   font-weight: 600;
-  color: #ffffff;
+  color: #111827;
   letter-spacing: 0.05em;
 }
 
@@ -680,14 +680,14 @@ button {
   align-items: center;
   gap: 10px;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
+  color: #4b5563;
   text-decoration: none;
   transition: color 0.2s ease, transform 0.2s ease;
   font-weight: 400;
 }
 
 .footer-link-item:hover {
-  color: #ffffff;
+  color: #0240BA;
   transform: translateX(2px);
 }
 
