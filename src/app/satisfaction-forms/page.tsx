@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import EmojiSlider from "../components/EmojiSlider";
+import Footer from "../components/Footer";
 import { supabase } from "@/lib/supabaseClient";
 
 export default function SatisfactionFormsPage() {
@@ -46,7 +48,7 @@ export default function SatisfactionFormsPage() {
   // Handle Form Submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Simple Validation
     const newErrors: {
       name?: string;
@@ -55,7 +57,7 @@ export default function SatisfactionFormsPage() {
       slider2?: string;
       slider3?: string;
     } = {};
-    
+
     if (!name.trim()) {
       newErrors.name = "Nama atau nama instansi wajib diisi.";
     }
@@ -75,7 +77,7 @@ export default function SatisfactionFormsPage() {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      
+
       // Scroll to the first error
       if (newErrors.name) {
         const nameInput = document.getElementById("name-input") as HTMLInputElement;
@@ -122,7 +124,7 @@ export default function SatisfactionFormsPage() {
         setIsSubmitting(false);
         setShowModal(true);
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error("Unexpected error submitting feedback:", err);
       alert("An unexpected error occurred during submission.");
       setIsSubmitting(false);
@@ -140,9 +142,11 @@ export default function SatisfactionFormsPage() {
 
   const renderEmojiSpan = (val: number) => {
     return (
-      <img
+      <Image
         src={getAppleEmojiPath(val)}
         alt="Emoji score badge"
+        width={20}
+        height={20}
         style={{
           width: "20px",
           height: "20px",
@@ -158,10 +162,13 @@ export default function SatisfactionFormsPage() {
     <main className="form-page-container">
       {/* Brand Header */}
       <header className="logo-header">
-        <img
+        <Image
           src="/Assets/solustream_logo.png"
           alt="Solustream Logo"
+          width={100}
+          height={60}
           className="logo-image"
+          style={{ width: "auto", height: "auto" }}
         />
         <h1 className="page-title">Survei Kepuasan Layanan</h1>
       </header>
@@ -171,7 +178,7 @@ export default function SatisfactionFormsPage() {
         <div className="forms-grid">
           {/* Left Column: Personal Info & Sliders */}
           <div className="left-column">
-            
+
             {/* Identity Group 1 (Name) */}
             <div className="form-group">
               <label htmlFor="name-input" className="form-title-label">
@@ -291,7 +298,7 @@ export default function SatisfactionFormsPage() {
 
           {/* Right Column: Textarea Suggestions */}
           <div className="right-column">
-            
+
             <div className="form-group" style={{ height: "100%" }}>
               <label htmlFor="feedback-textarea" className="form-title-label">
                 Ulasan Tambahan & Saran Perbaikan
@@ -322,7 +329,7 @@ export default function SatisfactionFormsPage() {
           >
             Bersihkan
           </button>
-          
+
           <button
             type="submit"
             className="btn-submit"
@@ -406,7 +413,7 @@ export default function SatisfactionFormsPage() {
                 <div style={{ marginTop: "6px", borderTop: "1px solid #e4e4e7", paddingTop: "12px" }}>
                   <div style={{ color: "#71717a", marginBottom: "6px" }}>Ulasan/Saran Anda:</div>
                   <div style={{ color: "#000000", fontStyle: "italic", lineHeight: 1.5, background: "#ffffff", padding: "10px 14px", borderRadius: "8px", border: "1px solid #e4e4e7" }}>
-                    "{feedback.length > 120 ? `${feedback.substring(0, 120)}...` : feedback}"
+                    &quot;{feedback.length > 120 ? `${feedback.substring(0, 120)}...` : feedback}&quot;
                   </div>
                 </div>
               )}
@@ -425,6 +432,8 @@ export default function SatisfactionFormsPage() {
           100% { transform: rotate(360deg); }
         }
       `}</style>
+
+      <Footer />
     </main>
   );
 }

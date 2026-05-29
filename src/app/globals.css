@@ -114,8 +114,8 @@ button {
 }
 
 .logo-image {
-  height: 120px;
-  /* Increased from 60px to make the branding more prominent */
+  height: 60px;
+  /* Restored to original 60px for clean, balanced branding proportion */
   width: auto;
   object-fit: contain;
   transition: transform 0.3s ease;
@@ -600,4 +600,136 @@ button {
 
 .btn-start:active {
   transform: translateY(0);
+}
+
+/* Shared Footer Styles */
+.global-footer {
+  width: 100%;
+  border-top: 1px solid #e4e4e7;
+  padding: 40px 0;
+  margin-top: 80px;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+}
+
+.global-footer-container {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.footer-left {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+.footer-copyright {
+  font-size: 14px;
+  color: #71717a;
+  font-weight: 400;
+}
+
+.footer-right {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+
+.footer-contact-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-contact-title {
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #18181b;
+  letter-spacing: 0.05em;
+}
+
+.footer-links-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.footer-link-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #4b5563;
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+  font-weight: 400;
+}
+
+.footer-link-item:hover {
+  color: #002db3;
+  transform: translateX(2px);
+}
+
+.footer-icon {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 2px;
+  fill: none;
+  transition: stroke 0.2s ease;
+}
+
+/* Responsive Footer styling */
+@media (max-width: 768px) {
+  .global-footer {
+    padding: 32px 0;
+    margin-top: 48px;
+  }
+
+  .global-footer-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0 24px;
+    gap: 32px;
+  }
+
+  .footer-left {
+    align-items: center;
+  }
+
+  .footer-right {
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    width: 100%;
+  }
+
+  .footer-contact-group {
+    align-items: center;
+  }
+
+  .footer-link-item:hover {
+    transform: none;
+  }
 }

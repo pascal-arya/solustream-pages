@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-
+import React, { useState } from "react";
+import Image from "next/image";
 interface EmojiSliderProps {
   id: string;
   min?: number;
@@ -32,12 +32,7 @@ export default function EmojiSlider({
   const isControlled = controlledValue !== undefined;
   const currentValue = isControlled ? controlledValue : internalValue;
 
-  // Sync internal state if controlled value changes
-  useEffect(() => {
-    if (isControlled) {
-      setInternalValue(controlledValue);
-    }
-  }, [controlledValue, isControlled]);
+
 
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseInt(e.target.value, 10);
@@ -115,9 +110,11 @@ export default function EmojiSlider({
             >
               {/* Apple Emoji Thumb */}
               <span className="slider-emoji" role="img" aria-label="satisfaction emoji">
-                <img
+                <Image
                   src={getEmojiPath(currentValue)}
                   alt="Apple Emoji rating"
+                  width={42}
+                  height={42}
                   style={{
                     width: "42px",
                     height: "42px",
