@@ -4,15 +4,16 @@ import React, { useState, useEffect } from 'react';
 import '../landing.css';
 
 export default function FloatingBookButton() {
-  const [visible, setVisible] = useState(false);
+  const [scrolledPastHero, setScrolledPastHero] = useState(false);
+  const [bookingVisible, setBookingVisible] = useState(false);
 
   useEffect(() => {
+    // 1. Scroll listener for showing button past Hero section
     const handleScroll = () => {
-      // Display the FAB button once scrolled past the hero section (e.g. 600px)
       if (window.scrollY > 600) {
-        setVisible(true);
+        setScrolledPastHero(true);
       } else {
-        setVisible(false);
+        setScrolledPastHero(false);
       }
     };
 
@@ -20,10 +21,32 @@ export default function FloatingBookButton() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    // 2. IntersectionObserver to detect when the booking section CTA enters the viewport
+    const bookingElement = document.getElementById('booking');
+    if (!bookingElement) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setBookingVisible(entry.isIntersecting);
+      },
+      { 
+        rootMargin: '0px 0px -100px 0px', // triggers slightly before full entry
+        threshold: 0.1 
+      }
+    );
+
+    observer.observe(bookingElement);
+    return () => observer.disconnect();
+  }, []);
+
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
+
+  // Button is visible ONLY when scrolled past hero and the actual booking form is NOT visible
+  const visible = scrolledPastHero && !bookingVisible;
 
   return (
     <button
