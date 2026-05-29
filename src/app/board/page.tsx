@@ -28,7 +28,6 @@ type ActiveTab = "responses" | "invoice" | "mou";
 
 type FormResponse = {
   id: number;
-  created_at: string;
   client_name: string;
   event_name: string;
   question01_sliders: number;
@@ -292,7 +291,7 @@ export default function BoardPage() {
       const { data, error } = await supabase
         .from("SatisfactionForms")
         .select("*")
-        .order("created_at", { ascending: false });
+        .order("id", { ascending: false });
       if (!error && data) setResponses(data as FormResponse[]);
       else if (error) console.error("Fetch error:", error.message);
     } finally {
@@ -433,7 +432,6 @@ export default function BoardPage() {
                   <thead>
                     <tr>
                       <th>#</th>
-                      <th>Date</th>
                       <th>Name / Company</th>
                       <th>Event</th>
                       <th>Streaming Quality</th>
@@ -446,9 +444,6 @@ export default function BoardPage() {
                     {responses.map((r, i) => (
                       <tr key={r.id}>
                         <td style={{ color: "#94a3b8", fontWeight: 700, fontSize: "0.75rem" }}>{i + 1}</td>
-                        <td style={{ whiteSpace: "nowrap", color: "#64748b", fontSize: "0.8rem" }}>
-                          {new Date(r.created_at).toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" })}
-                        </td>
                         <td style={{ fontWeight: 600 }}>{r.client_name || "—"}</td>
                         <td style={{ color: "#64748b" }}>{r.event_name || "—"}</td>
                         <td>
