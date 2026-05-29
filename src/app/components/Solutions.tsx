@@ -9,7 +9,7 @@ export default function Solutions() {
       image: '/Assets/Landing Page/Solusi Img/seminat.png',
       titleImage: '/Assets/Landing Page/Group 2607807.png',
       altText: 'Seminar & Conference',
-      description: 'Jangkau audiens lebih luas dengan seminar virtual interaktif dan profesional',
+      description: 'Menghubungkan audiens on-site dan online tanpa sekat.',
     },
     {
       id: 2,
@@ -23,7 +23,7 @@ export default function Solutions() {
       image: '/Assets/Landing Page/Solusi Img/Mask group (1).png',
       titleImage: '/Assets/Landing Page/Group 2607809.png',
       altText: 'Event & Entertainment',
-      description: 'Siarkan keseruan konser, festival, dan acara hiburan secara real-time',
+      description: 'Siarkan peluncuran produk, event kantor, hingga acara hiburan',
     },
     {
       id: 4,
@@ -60,7 +60,7 @@ export default function Solutions() {
                   priority={card.id <= 2}
                 />
               </div>
-              
+
               <div className="solution-card-content">
                 <div className="solution-card-title-wrapper">
                   <Image
@@ -72,7 +72,7 @@ export default function Solutions() {
                     style={{ width: "auto", height: "auto" }}
                   />
                 </div>
-                
+
                 <p className="solution-card-description">
                   {card.description}
                 </p>
