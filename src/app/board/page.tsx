@@ -139,15 +139,15 @@ function SortableArticle({
 
         {/* Content */}
         <div style={{ paddingLeft: "3.5rem" }}>
-          {clause.title === "Roles and Responsibility" &&
+          {clause.title === "Peran dan Tanggung Jawab" &&
           providerResponsibilities &&
           setProviderResponsibilities &&
           clientResponsibilities &&
           setClientResponsibilities ? (
             <div className="board-parties-grid" style={{ background: "#f8fafc", padding: "1.25rem", borderRadius: "14px", border: "1px solid #f1f5f9" }}>
               {[
-                { label: "Provider Responsibilities", items: providerResponsibilities, setItems: setProviderResponsibilities, color: "#3b82f6" },
-                { label: "Client Responsibilities", items: clientResponsibilities, setItems: setClientResponsibilities, color: "#a855f7" },
+                { label: "Tanggung Jawab Pihak Pertama (Solustream)", items: providerResponsibilities, setItems: setProviderResponsibilities, color: "#3b82f6" },
+                { label: "Tanggung Jawab Pihak Kedua (Klien)", items: clientResponsibilities, setItems: setClientResponsibilities, color: "#a855f7" },
               ].map(({ label, items, setItems, color }) => (
                 <div key={label} style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
                   <p style={{ fontSize: "0.65rem", fontWeight: 900, color, textTransform: "uppercase", letterSpacing: "0.1em", display: "flex", alignItems: "center", gap: "0.375rem" }}>
@@ -216,7 +216,13 @@ export default function BoardPage() {
   });
   const [manualContent, setManualContent] = useState("");
   const [projectTitle, setProjectTitle] = useState("");
+  const [mouTotalNominal, setMouTotalNominal] = useState(1500000);
   const [depositPercentage, setDepositPercentage] = useState(50);
+  const [mouDeadline, setMouDeadline] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 7);
+    return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
+  });
   const [terminationDays, setTerminationDays] = useState(30);
   const [providerResponsibilities, setProviderResponsibilities] = useState<string[]>([
     "Menyediakan layanan live streaming sesuai paket yang disepakati",
@@ -263,12 +269,9 @@ export default function BoardPage() {
     setClauses((prev) =>
       prev.map((clause) => {
         if (clause.title === "Ketentuan Finansial dan Jadwal Pembayaran") {
-          const depositAmount = (grandTotal * depositPercentage) / 100;
-          const finalAmount = grandTotal - depositAmount;
-          const discountText = discountAmount > 0
-            ? `Subtotal: Rp${subtotal.toLocaleString("id-ID")}\nDiskon: ${discountType === "percentage" ? `${discountValue}%` : `Rp${discountValue.toLocaleString("id-ID")}`} (-Rp${discountAmount.toLocaleString("id-ID")})\n`
-            : "";
-          return { ...clause, content: `${discountText}Total Biaya Proyek: Rp${grandTotal.toLocaleString("id-ID")}\n\n1. Uang Muka (DP): ${depositPercentage}% (Rp${depositAmount.toLocaleString("id-ID")})\n2. Pelunasan: ${100 - depositPercentage}% (Rp${finalAmount.toLocaleString("id-ID")})\n\nPelunasan paling lambat pada tanggal ${invoiceDueDate}.` };
+          const depositAmount = (mouTotalNominal * depositPercentage) / 100;
+          const finalAmount = mouTotalNominal - depositAmount;
+          return { ...clause, content: `Total Biaya Proyek: Rp${mouTotalNominal.toLocaleString("id-ID")}\n\n1. Uang Muka (DP): ${depositPercentage}% (Rp${depositAmount.toLocaleString("id-ID")})\n2. Pelunasan: ${100 - depositPercentage}% (Rp${finalAmount.toLocaleString("id-ID")})\n\nPelunasan paling lambat pada tanggal ${mouDeadline}.` };
         }
         if (clause.title === "Peran dan Tanggung Jawab") {
           return { ...clause, content: `Tanggung Jawab Pihak Pertama (Solustream):\n${providerResponsibilities.map((p) => `- ${p}`).join("\n")}\n\nTanggung Jawab Pihak Kedua (Klien):\n${clientResponsibilities.map((p) => `- ${p}`).join("\n")}` };
@@ -282,7 +285,7 @@ export default function BoardPage() {
         return clause;
       })
     );
-  }, [grandTotal, subtotal, discountAmount, discountValue, discountType, depositPercentage, invoiceDueDate, terminationDays, projectTitle, providerResponsibilities, clientResponsibilities]);
+  }, [mouTotalNominal, depositPercentage, mouDeadline, terminationDays, projectTitle, providerResponsibilities, clientResponsibilities]);
 
   // ── Fetch responses ──
   const fetchResponses = useCallback(async () => {
@@ -604,14 +607,20 @@ export default function BoardPage() {
                       <div className="board-divider" />
                       <div className="board-grid-2">
                         <div>
+                          <label className="board-label">Total Nominal (Rp)</label>
+                          <input className="board-input" type="number" value={mouTotalNominal || ""} onChange={(e) => setMouTotalNominal(parseFloat(e.target.value) || 0)} />
+                        </div>
+                        <div>
                           <label className="board-label">Deposit Percentage (%)</label>
                           <input className="board-input" type="number" min="0" max="100" value={depositPercentage} onChange={(e) => setDepositPercentage(parseInt(e.target.value) || 0)} />
-                          <p style={{ fontSize: "0.7rem", color: "#94a3b8", marginTop: "0.25rem", fontStyle: "italic" }}>* Updates Financial Terms automatically</p>
+                        </div>
+                        <div>
+                          <label className="board-label">Payment Deadline</label>
+                          <input className="board-input" value={mouDeadline} onChange={(e) => setMouDeadline(e.target.value)} placeholder="01/01/2026" />
                         </div>
                         <div>
                           <label className="board-label">Termination Notice (Days)</label>
                           <input className="board-input" type="number" value={terminationDays} onChange={(e) => setTerminationDays(parseInt(e.target.value) || 0)} />
-                          <p style={{ fontSize: "0.7rem", color: "#94a3b8", marginTop: "0.25rem", fontStyle: "italic" }}>* Updates Termination article automatically</p>
                         </div>
                       </div>
                     </div>
