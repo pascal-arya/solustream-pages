@@ -38,8 +38,7 @@ export default function RichTextEditor({
     },
     editorProps: {
       attributes: {
-        class:
-          "prose prose-sm focus:outline-none max-w-none text-[13px] leading-relaxed text-gray-500",
+        class: "rte-editor-inner",
       },
     },
   });
@@ -56,38 +55,34 @@ export default function RichTextEditor({
   if (!editor) return null;
 
   return (
-    <div
-      className={`w-full bg-white border border-gray-100 rounded-xl overflow-hidden transition-all focus-within:border-blue-200 focus-within:shadow-sm ${
-        readOnly ? "opacity-80 bg-gray-50/20" : ""
-      }`}
-    >
+    <div className={`rte-container ${readOnly ? "readonly" : ""}`}>
       {!readOnly && (
-        <div className="flex items-center gap-1 bg-gray-100/80 p-1 border-b border-gray-100">
+        <div className="rte-toolbar">
           <button
             onClick={(e) => { e.preventDefault(); editor.chain().focus().toggleBold().run(); }}
-            className={`p-1.5 rounded-md transition-all ${editor.isActive("bold") ? "bg-white text-blue-900 shadow-sm" : "text-gray-400 hover:text-blue-900 hover:bg-white"}`}
+            className={`rte-btn ${editor.isActive("bold") ? "active" : ""}`}
             title="Bold"
           >
             <Bold size={14} />
           </button>
           <button
             onClick={(e) => { e.preventDefault(); editor.chain().focus().toggleItalic().run(); }}
-            className={`p-1.5 rounded-md transition-all ${editor.isActive("italic") ? "bg-white text-blue-900 shadow-sm" : "text-gray-400 hover:text-blue-900 hover:bg-white"}`}
+            className={`rte-btn ${editor.isActive("italic") ? "active" : ""}`}
             title="Italic"
           >
             <Italic size={14} />
           </button>
-          <div className="w-px h-3 bg-gray-300 mx-1" />
+          <div className="rte-divider" />
           <button
             onClick={(e) => { e.preventDefault(); editor.chain().focus().toggleBulletList().run(); }}
-            className={`p-1.5 rounded-md transition-all ${editor.isActive("bulletList") ? "bg-white text-blue-900 shadow-sm" : "text-gray-400 hover:text-blue-900 hover:bg-white"}`}
+            className={`rte-btn ${editor.isActive("bulletList") ? "active" : ""}`}
             title="Bullet List"
           >
             <List size={14} />
           </button>
           <button
             onClick={(e) => { e.preventDefault(); editor.chain().focus().toggleOrderedList().run(); }}
-            className={`p-1.5 rounded-md transition-all ${editor.isActive("orderedList") ? "bg-white text-blue-900 shadow-sm" : "text-gray-400 hover:text-blue-900 hover:bg-white"}`}
+            className={`rte-btn ${editor.isActive("orderedList") ? "active" : ""}`}
             title="Numbered List"
           >
             <ListOrdered size={14} />
@@ -95,20 +90,25 @@ export default function RichTextEditor({
         </div>
       )}
 
-      <div className="p-4 min-h-[148px]">
+      <div className="rte-content-wrap">
         <style>{`
+          .rte-editor-inner {
+            outline: none;
+            min-height: 100%;
+          }
           .ProseMirror p.is-editor-empty:first-child::before {
             content: attr(data-placeholder);
             float: left;
-            color: #adb5bd;
+            color: #94a3b8;
             pointer-events: none;
             height: 0;
           }
-          .ProseMirror strong { font-weight: 700; color: #111827; }
+          .ProseMirror strong { font-weight: 700; color: #0f172a; }
           .ProseMirror em { font-style: italic; }
           .ProseMirror ul { list-style-type: disc; padding-left: 1.25rem; margin-bottom: 0.75rem; }
           .ProseMirror ol { list-style-type: decimal; padding-left: 1.25rem; margin-bottom: 0.75rem; }
           .ProseMirror li { margin-bottom: 0.25rem; }
+          .ProseMirror p { margin-bottom: 0.5rem; }
         `}</style>
         <EditorContent editor={editor} />
       </div>
