@@ -6,31 +6,31 @@ export default function Solutions() {
   const cards = [
     {
       id: 1,
-      bgImage: '/Assets/Landing Page/Sawi editor handal 2.png',
-      textImage: '/Assets/Landing Page/Group 2607807.png',
+      image: '/Assets/Landing Page/Solusi Img/seminat.png',
+      titleImage: '/Assets/Landing Page/Group 2607807.png',
       altText: 'Seminar & Conference',
-      isBlueBg: false,
+      description: 'Jangkau audiens lebih luas dengan seminar virtual interaktif dan profesional',
     },
     {
       id: 2,
-      bgImage: '/Assets/Landing Page/Untitled design (100) 3.png',
-      textImage: '/Assets/Landing Page/Group 2607808.png',
+      image: '/Assets/Landing Page/Solusi Img/Mask group (1).png',
+      titleImage: '/Assets/Landing Page/Group 2607808.png',
       altText: 'Sales & Commerce',
-      isBlueBg: false,
+      description: 'Ubah penonton menjadi pembeli dengan live multi-platform',
     },
     {
       id: 3,
-      bgImage: '/Assets/Landing Page/Rectangle.png',
-      textImage: '/Assets/Landing Page/Group 2607809.png',
+      image: '/Assets/Landing Page/Solusi Img/Mask group (2).png',
+      titleImage: '/Assets/Landing Page/Group 2607809.png',
       altText: 'Event & Entertainment',
-      isBlueBg: false,
+      description: 'Siarkan keseruan konser, festival, dan acara hiburan secara real-time',
     },
     {
       id: 4,
-      bgImage: '',
-      textImage: '/Assets/Landing Page/Group 2607810.png',
+      image: '/Assets/Landing Page/Solusi Img/Mask group.png',
+      titleImage: '/Assets/Landing Page/Group 2607810.png',
       altText: 'Custom Solutions',
-      isBlueBg: true,
+      description: 'Solusi penyiaran khusus yang disesuaikan dengan kebutuhan unik event Anda',
     },
   ];
 
@@ -46,36 +46,33 @@ export default function Solutions() {
 
         <div className="solutions-grid">
           {cards.map((card) => (
-            <div
-              key={card.id}
-              className={`solution-card ${card.isBlueBg ? 'card-blue-bg' : ''}`}
-            >
-              {!card.isBlueBg && card.bgImage && (
-                <>
-                  <div className="card-bg-wrapper">
-                    <Image
-                      src={card.bgImage}
-                      alt={card.altText}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 25vw"
-                      className="card-bg-image"
-                    />
-                  </div>
-                  <div className="card-overlay-gradient"></div>
-                </>
-              )}
+            <div key={card.id} className="solution-card">
+              <div className="solution-card-image-wrapper">
+                <Image
+                  src={card.image}
+                  alt={card.altText}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 25vw"
+                  className="solution-card-image"
+                  priority={card.id <= 2}
+                />
+              </div>
               
-              <div className="card-content">
-                <div className="card-text-image-wrapper">
+              <div className="solution-card-content">
+                <div className="solution-card-title-wrapper">
                   <Image
-                    src={card.textImage}
+                    src={card.titleImage}
                     alt={card.altText}
                     width={180}
-                    height={80}
-                    className="card-text-image"
-                    style={{ width: "auto", height: "auto", maxWidth: "100%" }}
+                    height={50}
+                    className="solution-card-title-img"
+                    style={{ width: "auto", height: "auto" }}
                   />
                 </div>
+                
+                <p className="solution-card-description">
+                  {card.description}
+                </p>
               </div>
             </div>
           ))}

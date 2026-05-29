@@ -275,92 +275,83 @@
 
 .solution-card {
   position: relative;
-  height: 440px;
-  border-radius: 24px;
+  height: 460px;
+  border-radius: 28px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding: 32px 24px;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 0 24px;
   background-color: #ffffff;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
 }
 
 .solution-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
 }
 
-.card-bg-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
+.solution-card-image-wrapper {
   width: 100%;
-  height: 100%;
-  z-index: 1;
+  height: 230px;
+  position: relative;
   overflow: hidden;
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fcfcfc;
 }
 
-.card-bg-image {
+.solution-card-image {
   object-fit: cover;
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.solution-card:hover .card-bg-image {
-  transform: scale(1.08);
+.solution-card:hover .solution-card-image {
+  transform: scale(1.05);
 }
 
-.card-overlay-gradient {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.75) 100%);
-}
-
-.card-content {
-  position: relative;
-  z-index: 3;
+.solution-card-content {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 24px 20px 0;
+  box-sizing: border-box;
 }
 
-.card-text-image-wrapper {
-  width: 100%;
+.solution-card-title-wrapper {
+  height: 48px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  width: 100%;
 }
 
-.card-text-image {
+.solution-card-title-img {
   object-fit: contain;
   transition: transform 0.3s ease;
 }
 
-.solution-card:hover .card-text-image {
+.solution-card:hover .solution-card-title-img {
   transform: scale(1.03);
 }
 
-.card-blue-bg {
-  background: linear-gradient(to top right, #060173 0%, #0240BA 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.card-blue-bg .card-content {
-  height: 100%;
-  justify-content: center;
-}
-
-.card-blue-bg:hover {
-  background-color: #002280;
+.solution-card-description {
+  font-size: 14px;
+  color: #4b5563;
+  text-align: center;
+  line-height: 1.6;
+  font-weight: 400;
+  max-width: 95%;
+  margin: 0;
 }
 
 /* Reasons Section Styles */
@@ -936,9 +927,30 @@
 
   .solution-card {
     flex: 0 0 280px;
-    height: 380px;
+    height: 420px;
     scroll-snap-align: center;
-    padding: 24px 20px;
+    padding: 0 0 20px;
+    border-radius: 24px;
+  }
+
+  .solution-card-image-wrapper {
+    height: 180px;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+  }
+
+  .solution-card-content {
+    padding: 16px 12px 0;
+  }
+
+  .solution-card-title-wrapper {
+    height: 36px;
+    margin-bottom: 8px;
+  }
+
+  .solution-card-description {
+    font-size: 13px;
+    line-height: 1.5;
   }
 
   /* Reasons Mobile Responsiveness */
