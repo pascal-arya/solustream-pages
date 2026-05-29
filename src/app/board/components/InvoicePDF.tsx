@@ -163,33 +163,40 @@ export default function InvoicePDF({
                 </div>
               )}
 
-              {/* Header */}
+              {/* Header Row 1: INVOICE title + Total Due — BOTTOM aligned */}
               {isFirstPage && (
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px", width: "100%", paddingLeft: "4px", paddingRight: "8px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "20px", paddingLeft: "4px", paddingRight: "8px" }}>
                   <div style={{ display: "flex", flexDirection: "column" }}>
                     <h1 style={{ fontSize: "44px", letterSpacing: "-0.02em", color: "#fff", fontWeight: 900, lineHeight: 1, margin: "0 0 4px" }}>INVOICE</h1>
-                    <p style={{ fontSize: "20px", color: "#fff", fontWeight: 300, letterSpacing: "0.1em", margin: "0 0 20px" }}>
+                    <p style={{ fontSize: "20px", color: "#fff", fontWeight: 300, letterSpacing: "0.1em", margin: 0 }}>
                       {invoiceNumber || "SOLU26-027"}
                     </p>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                      <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "16px", lineHeight: 1, margin: 0 }}>Invoice to:</h3>
-                      <p style={{ color: "#fff", fontSize: "22px", fontWeight: 800, lineHeight: 1, margin: 0 }}>{clientName || "Raka Sanjaya"}</p>
-                      <p style={{ color: "#fff", fontWeight: 300, fontSize: "15px", lineHeight: 1, margin: 0 }}>{clientPhone || "087777964411"}</p>
-                    </div>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-                    <p style={{ color: "#fff", fontWeight: 700, fontSize: "14px", lineHeight: 1, margin: "0 0 4px", textAlign: "right" as const }}>Total Due:</p>
-                    <h2 style={{ fontSize: "36px", color: "#fff", fontWeight: 300, lineHeight: 1, margin: "0 0 20px" }}>
+                    <p style={{ color: "#fff", fontWeight: 700, fontSize: "14px", lineHeight: 1, margin: "0 0 4px" }}>Total Due:</p>
+                    <h2 style={{ fontSize: "36px", color: "#fff", fontWeight: 300, lineHeight: 1, margin: 0 }}>
                       Rp{grandTotal.toLocaleString("id-ID")}
                     </h2>
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "2px" }}>
-                      <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "16px", lineHeight: 1, margin: 0, textAlign: "right" as const }}>Payment to:</h3>
-                      <p style={{ color: "#fff", fontSize: "20px", fontWeight: 700, lineHeight: 1, margin: 0 }}>{bankAccount || "8415886230 (BCA)"}</p>
-                      <p style={{ color: "#fff", fontWeight: 300, fontSize: "15px", lineHeight: 1, margin: 0 }}>{bankUser || "Pascal Arya Nugroho"}</p>
-                    </div>
                   </div>
                 </div>
               )}
+
+              {/* Header Row 2: Invoice to + Payment to — TOP aligned */}
+              {isFirstPage && (
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px", paddingLeft: "4px", paddingRight: "8px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                    <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "16px", lineHeight: 1, margin: 0 }}>Invoice to:</h3>
+                    <p style={{ color: "#fff", fontSize: "22px", fontWeight: 800, lineHeight: 1, margin: 0 }}>{clientName || "Raka Sanjaya"}</p>
+                    <p style={{ color: "#fff", fontWeight: 300, fontSize: "15px", lineHeight: 1, margin: 0 }}>{clientPhone || "087777964411"}</p>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "2px" }}>
+                    <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "16px", lineHeight: 1, margin: 0 }}>Payment to:</h3>
+                    <p style={{ color: "#fff", fontSize: "20px", fontWeight: 700, lineHeight: 1, margin: 0 }}>{bankAccount || "8415886230 (BCA)"}</p>
+                    <p style={{ color: "#fff", fontWeight: 300, fontSize: "15px", lineHeight: 1, margin: 0 }}>{bankUser || "Pascal Arya Nugroho"}</p>
+                  </div>
+                </div>
+              )}
+
 
               {/* Dates */}
               {isFirstPage && (
