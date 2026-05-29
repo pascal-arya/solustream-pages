@@ -8,8 +8,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Solustream Satisfaction Forms",
-  description: "Share your experience with Solustream services.",
+  title: "Solustream | Solusi Streaming",
+  description: "Solustream — Solusi streaming profesional untuk acara Anda.",
 };
 
 export default function RootLayout({

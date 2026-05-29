@@ -29,12 +29,12 @@ type ActiveTab = "responses" | "invoice" | "mou";
 type FormResponse = {
   id: number;
   created_at: string;
-  name: string;
-  email: string;
-  slider1: number;
-  slider2: number;
-  slider3: number;
-  feedback: string | null;
+  client_name: string;
+  event_name: string;
+  question01_sliders: number;
+  question02_sliders: number;
+  question03_sliders: number;
+  testimonial: string | null;
 };
 
 type Clause = {
@@ -290,10 +290,11 @@ export default function BoardPage() {
     setLoadingResponses(true);
     try {
       const { data, error } = await supabase
-        .from("satisfaction_forms")
+        .from("SatisfactionForms")
         .select("*")
         .order("created_at", { ascending: false });
       if (!error && data) setResponses(data as FormResponse[]);
+      else if (error) console.error("Fetch error:", error.message);
     } finally {
       setLoadingResponses(false);
     }
@@ -448,27 +449,27 @@ export default function BoardPage() {
                         <td style={{ whiteSpace: "nowrap", color: "#64748b", fontSize: "0.8rem" }}>
                           {new Date(r.created_at).toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" })}
                         </td>
-                        <td style={{ fontWeight: 600 }}>{r.name || "—"}</td>
-                        <td style={{ color: "#64748b" }}>{r.email || "—"}</td>
+                        <td style={{ fontWeight: 600 }}>{r.client_name || "—"}</td>
+                        <td style={{ color: "#64748b" }}>{r.event_name || "—"}</td>
                         <td>
-                          <span className={`board-score-pill ${scoreClass(r.slider1)}`}>
-                            {r.slider1}%
+                          <span className={`board-score-pill ${scoreClass(r.question01_sliders)}`}>
+                            {r.question01_sliders}%
                           </span>
                         </td>
                         <td>
-                          <span className={`board-score-pill ${scoreClass(r.slider2)}`}>
-                            {r.slider2}%
+                          <span className={`board-score-pill ${scoreClass(r.question02_sliders)}`}>
+                            {r.question02_sliders}%
                           </span>
                         </td>
                         <td>
-                          <span className={`board-score-pill ${scoreClass(r.slider3)}`}>
-                            {r.slider3}%
+                          <span className={`board-score-pill ${scoreClass(r.question03_sliders)}`}>
+                            {r.question03_sliders}%
                           </span>
                         </td>
                         <td style={{ maxWidth: "200px", color: "#64748b", fontSize: "0.8rem" }}>
-                          {r.feedback ? (
-                            <span title={r.feedback} style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                              {r.feedback}
+                          {r.testimonial ? (
+                            <span title={r.testimonial} style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                              {r.testimonial}
                             </span>
                           ) : <span style={{ color: "#cbd5e1" }}>—</span>}
                         </td>
