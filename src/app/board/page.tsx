@@ -219,23 +219,23 @@ export default function BoardPage() {
   const [depositPercentage, setDepositPercentage] = useState(50);
   const [terminationDays, setTerminationDays] = useState(30);
   const [providerResponsibilities, setProviderResponsibilities] = useState<string[]>([
-    "Deliver project assets as defined in scope",
-    "Maintain regular communication",
-    "Fix bugs during the maintenance period",
+    "Menyediakan layanan live streaming sesuai paket yang disepakati",
+    "Menyiapkan dan menguji peralatan (kamera, audio, dan encoder) sebelum acara dimulai",
+    "Memastikan kualitas siaran yang optimal selama acara berlangsung",
   ]);
   const [clientResponsibilities, setClientResponsibilities] = useState<string[]>([
-    "Provide necessary assets for project start",
-    "Give feedback within agreed timelines",
-    "Process payments according to schedule",
+    "Menyediakan koneksi internet cadangan di lokasi acara (opsional jika tidak menggunakan paket Solustream)",
+    "Menyediakan rundown acara dan aset visual (logo, bumper, overlay) tepat waktu",
+    "Melakukan pembayaran sesuai dengan termin yang telah disepakati",
   ]);
   const [partyA, setPartyA] = useState({ name: "Solustream Digital", representative: "Daffa Yordan", position: "Chief Executive Officer" });
   const [partyB, setPartyB] = useState({ name: "", representative: "", position: "" });
   const [clauses, setClauses] = useState<Clause[]>([
-    { id: "clause-1", title: "Purpose and Scope", content: `The purpose of this agreement is to define the collaboration terms between Party A and Party B for [Project Name], ensuring a clear understanding of the project scope and objectives.`, hidden: false },
-    { id: "clause-2", title: "Roles and Responsibility", content: "", hidden: false },
-    { id: "clause-3", title: "Financial Terms and Payment Schedule", content: "", hidden: false },
-    { id: "clause-4", title: "Late Payment Policy", content: "In the event that the final payment is not received within the due date, a late fee of 5% per week will be incurred. Final sources and assets will only be delivered to the client after the deposit payment has been confirmed.", hidden: false },
-    { id: "clause-5", title: "Term and Termination", content: `This MoU shall remain in effect until the project is completed. Either party may terminate this agreement with 30 days' written notice if the other party fails to meet their responsibilities.`, hidden: false },
+    { id: "clause-1", title: "Maksud dan Tujuan", content: `Perjanjian ini bertujuan untuk menetapkan ketentuan kerja sama antara Pihak Pertama dan Pihak Kedua untuk layanan live streaming pada [Nama Acara], guna memastikan pemahaman yang jelas tentang ruang lingkup dan tujuan pekerjaan.`, hidden: false },
+    { id: "clause-2", title: "Peran dan Tanggung Jawab", content: "", hidden: false },
+    { id: "clause-3", title: "Ketentuan Finansial dan Jadwal Pembayaran", content: "", hidden: false },
+    { id: "clause-4", title: "Kebijakan Keterlambatan Pembayaran", content: "Jika pembayaran pelunasan tidak diterima melewati batas waktu yang ditentukan, akan dikenakan denda keterlambatan sebesar 5% per minggu. Master file rekaman dan aset final hanya akan diserahkan kepada klien setelah pelunasan diselesaikan.", hidden: false },
+    { id: "clause-5", title: "Jangka Waktu dan Penghentian Perjanjian", content: `Perjanjian ini berlaku sejak tanggal ditandatangani hingga seluruh rangkaian acara dan kewajiban diselesaikan. Salah satu pihak dapat mengakhiri perjanjian ini dengan pemberitahuan tertulis selambat-lambatnya 30 hari sebelumnya jika pihak lain gagal memenuhi tanggung jawabnya.`, hidden: false },
   ]);
 
   // ── Shared Preview State ──
@@ -262,22 +262,22 @@ export default function BoardPage() {
   useEffect(() => {
     setClauses((prev) =>
       prev.map((clause) => {
-        if (clause.title === "Financial Terms and Payment Schedule") {
+        if (clause.title === "Ketentuan Finansial dan Jadwal Pembayaran") {
           const depositAmount = (grandTotal * depositPercentage) / 100;
           const finalAmount = grandTotal - depositAmount;
           const discountText = discountAmount > 0
-            ? `Subtotal: Rp${subtotal.toLocaleString("id-ID")}\nDiscount: ${discountType === "percentage" ? `${discountValue}%` : `Rp${discountValue.toLocaleString("id-ID")}`} (-Rp${discountAmount.toLocaleString("id-ID")})\n`
+            ? `Subtotal: Rp${subtotal.toLocaleString("id-ID")}\nDiskon: ${discountType === "percentage" ? `${discountValue}%` : `Rp${discountValue.toLocaleString("id-ID")}`} (-Rp${discountAmount.toLocaleString("id-ID")})\n`
             : "";
-          return { ...clause, content: `${discountText}Total Project Fee: Rp${grandTotal.toLocaleString("id-ID")}\n\n1. Deposit: ${depositPercentage}% (Rp${depositAmount.toLocaleString("id-ID")})\n2. Final Payment: ${100 - depositPercentage}% (Rp${finalAmount.toLocaleString("id-ID")})\n\nFinal payment is due on ${invoiceDueDate}.` };
+          return { ...clause, content: `${discountText}Total Biaya Proyek: Rp${grandTotal.toLocaleString("id-ID")}\n\n1. Uang Muka (DP): ${depositPercentage}% (Rp${depositAmount.toLocaleString("id-ID")})\n2. Pelunasan: ${100 - depositPercentage}% (Rp${finalAmount.toLocaleString("id-ID")})\n\nPelunasan paling lambat pada tanggal ${invoiceDueDate}.` };
         }
-        if (clause.title === "Roles and Responsibility") {
-          return { ...clause, content: `Provider's Responsibilities:\n${providerResponsibilities.map((p) => `- ${p}`).join("\n")}\n\nClient's Responsibilities:\n${clientResponsibilities.map((p) => `- ${p}`).join("\n")}` };
+        if (clause.title === "Peran dan Tanggung Jawab") {
+          return { ...clause, content: `Tanggung Jawab Pihak Pertama (Solustream):\n${providerResponsibilities.map((p) => `- ${p}`).join("\n")}\n\nTanggung Jawab Pihak Kedua (Klien):\n${clientResponsibilities.map((p) => `- ${p}`).join("\n")}` };
         }
-        if (clause.title === "Term and Termination") {
-          return { ...clause, content: `This MoU shall remain in effect until the project is completed. Either party may terminate this agreement with ${terminationDays} days' written notice if the other party fails to meet their responsibilities.` };
+        if (clause.title === "Jangka Waktu dan Penghentian Perjanjian") {
+          return { ...clause, content: `Perjanjian ini berlaku sejak tanggal ditandatangani hingga seluruh rangkaian acara dan kewajiban diselesaikan. Salah satu pihak dapat mengakhiri perjanjian ini dengan pemberitahuan tertulis selambat-lambatnya ${terminationDays} hari sebelumnya jika pihak lain gagal memenuhi tanggung jawabnya.` };
         }
-        if (clause.title === "Purpose and Scope") {
-          return { ...clause, content: `The purpose of this agreement is to define the collaboration terms between Party A and Party B for ${projectTitle || "[Project Name]"}, ensuring a clear understanding of the project scope and objectives.` };
+        if (clause.title === "Maksud dan Tujuan") {
+          return { ...clause, content: `Perjanjian ini bertujuan untuk menetapkan ketentuan kerja sama antara Pihak Pertama dan Pihak Kedua untuk layanan live streaming pada acara ${projectTitle || "[Nama Acara]"}, guna memastikan pemahaman yang jelas tentang ruang lingkup dan tujuan pekerjaan.` };
         }
         return clause;
       })

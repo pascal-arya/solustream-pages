@@ -52,8 +52,8 @@ export default function MoUPDF({
         const isFirstPage = pages.length === 0;
         const limit = isFirstPage ? FIRST_PAGE_CONTENT_LIMIT : SUBSEQUENT_PAGE_LIMIT;
         let weight = 45;
-        const isRoles = clause.title.toLowerCase().includes("roles") || clause.title.toLowerCase().includes("responsibility");
-        const isFinance = clause.title.toLowerCase().includes("financial") || clause.title.toLowerCase().includes("payment schedule");
+        const isRoles = clause.title.toLowerCase().includes("peran") || clause.title.toLowerCase().includes("tanggung jawab");
+        const isFinance = clause.title.toLowerCase().includes("finansial") || clause.title.toLowerCase().includes("pembayaran");
         if (isRoles) {
             const providerPoints = clause.content.split("\n\n")[0]?.split("\n").length - 1 || 0;
             const clientPoints = clause.content.split("\n\n")[1]?.split("\n").length - 1 || 0;
@@ -140,16 +140,16 @@ export default function MoUPDF({
                             <div style={{ paddingLeft: "4px", display: "flex", flexDirection: "column", gap: "24px" }}>
                                 {pageClauses.map((clause, idx) => {
                                     const articleNum = clauses.findIndex((c) => c.id === clause.id) + 1;
-                                    const isRoles = clause.title.toLowerCase().includes("roles") || clause.title.toLowerCase().includes("responsibility");
-                                    const isFinance = clause.title.toLowerCase().includes("financial") || clause.title.toLowerCase().includes("payment schedule");
+                                    const isRoles = clause.title.toLowerCase().includes("peran") || clause.title.toLowerCase().includes("tanggung jawab");
+                                    const isFinance = clause.title.toLowerCase().includes("finansial") || clause.title.toLowerCase().includes("pembayaran");
 
                                     let totalFeeStr = "", depositAmountStr = "", finalAmountStr = "", depositPercent = "", dueDateStr = "";
                                     if (isFinance) {
-                                        totalFeeStr = clause.content.match(/Total Project Fee: (Rp[0-9.,]+)/)?.[1] || "";
-                                        depositAmountStr = clause.content.match(/Deposit: \d+% \((Rp[0-9.,]+)\)/)?.[1] || "";
-                                        finalAmountStr = clause.content.match(/Final Payment: \d+% \((Rp[0-9.,]+)\)/)?.[1] || "";
-                                        depositPercent = clause.content.match(/Deposit: (\d+)%/)?.[1] || "";
-                                        dueDateStr = clause.content.match(/due on ([\d/]+)/)?.[1] || "";
+                                        totalFeeStr = clause.content.match(/Total Biaya Proyek: (Rp[0-9.,]+)/)?.[1] || "";
+                                        depositAmountStr = clause.content.match(/Uang Muka \(DP\): \d+% \((Rp[0-9.,]+)\)/)?.[1] || "";
+                                        finalAmountStr = clause.content.match(/Pelunasan: \d+% \((Rp[0-9.,]+)\)/)?.[1] || "";
+                                        depositPercent = clause.content.match(/Uang Muka \(DP\): (\d+)%/)?.[1] || "";
+                                        dueDateStr = clause.content.match(/paling lambat pada tanggal ([\d/]+)/)?.[1] || "";
                                     }
 
                                     return (
@@ -166,8 +166,8 @@ export default function MoUPDF({
                                             {isRoles ? (
                                                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", paddingLeft: "32px", marginTop: "24px" }}>
                                                     {[
-                                                        { label: "Provider Role", lines: clause.content.split("\n\n")[0]?.split("\n").slice(1) || [] },
-                                                        { label: "Client/Partner Role", lines: clause.content.split("\n\n")[1]?.split("\n").slice(1) || [] },
+                                                        { label: "Peran Penyedia", lines: clause.content.split("\n\n")[0]?.split("\n").slice(1) || [] },
+                                                        { label: "Peran Klien", lines: clause.content.split("\n\n")[1]?.split("\n").slice(1) || [] },
                                                     ].map(({ label, lines }) => (
                                                         <div key={label} style={{ background: "rgba(255,255,255,0.05)", border: "1px solid white", borderRadius: "12px", padding: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
                                                             <p style={{ color: "#fff", fontWeight: 900, fontSize: "12px", letterSpacing: "0.1em", borderBottom: "1px solid white", paddingBottom: "6px", margin: "0 0 6px", textTransform: "uppercase" as const }}>{label}</p>
@@ -187,20 +187,20 @@ export default function MoUPDF({
                                                     <div style={{ background: "rgba(255,255,255,0.1)", border: "1px solid white", borderRadius: "8px", padding: "8px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                                         <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
                                                             <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                                                                <span style={{ fontSize: "10px", fontWeight: 900, color: "rgba(255,255,255,0.7)", textTransform: "uppercase" as const, letterSpacing: "0.1em" }}>Total Project Investment</span>
+                                                                <span style={{ fontSize: "10px", fontWeight: 900, color: "rgba(255,255,255,0.7)", textTransform: "uppercase" as const, letterSpacing: "0.1em" }}>Total Nilai Proyek</span>
                                                                 <span style={{ fontSize: "20px", color: "#fff", fontWeight: 900 }}>{totalFeeStr}</span>
                                                             </div>
                                                             <div style={{ width: "1px", height: "20px", background: "rgba(255,255,255,0.1)" }} />
                                                             <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                                                                <span style={{ fontSize: "10px", fontWeight: 900, color: "rgba(255,255,255,0.7)", textTransform: "uppercase" as const, letterSpacing: "0.1em" }}>Payment Terms</span>
+                                                                <span style={{ fontSize: "10px", fontWeight: 900, color: "rgba(255,255,255,0.7)", textTransform: "uppercase" as const, letterSpacing: "0.1em" }}>Ketentuan Pembayaran</span>
                                                                 <span style={{ fontSize: "12px", color: "#fff", fontWeight: 700, fontStyle: "italic" }}>Net 4 Days</span>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                                                         {[
-                                                            { num: "1", label: "Deposit", amount: depositAmountStr, right: `${depositPercent}%` },
-                                                            { num: "2", label: "Final", amount: finalAmountStr, right: `Due ${dueDateStr}` },
+                                                            { num: "1", label: "Uang Muka", amount: depositAmountStr, right: `${depositPercent}%` },
+                                                            { num: "2", label: "Pelunasan", amount: finalAmountStr, right: `Batas ${dueDateStr}` },
                                                         ].map(({ num, label, amount, right }) => (
                                                             <div key={num} style={{ background: "rgba(255,255,255,0.05)", border: "1px solid white", borderRadius: "8px", padding: "12px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                                                                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
