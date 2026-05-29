@@ -27,7 +27,7 @@ import "./board.css";
 type ActiveTab = "responses" | "invoice" | "mou";
 
 type FormResponse = {
-  id: number;
+  id?: number;
   client_name: string;
   event_name: string;
   question01_sliders: number;
@@ -290,8 +290,7 @@ export default function BoardPage() {
     try {
       const { data, error } = await supabase
         .from("SatisfactionForms")
-        .select("*")
-        .order("id", { ascending: false });
+        .select("*");
       if (!error && data) setResponses(data as FormResponse[]);
       else if (error) console.error("Fetch error:", error.message);
     } finally {
@@ -442,7 +441,7 @@ export default function BoardPage() {
                   </thead>
                   <tbody>
                     {responses.map((r, i) => (
-                      <tr key={r.id}>
+                      <tr key={r.id || i}>
                         <td style={{ color: "#94a3b8", fontWeight: 700, fontSize: "0.75rem" }}>{i + 1}</td>
                         <td style={{ fontWeight: 600 }}>{r.client_name || "—"}</td>
                         <td style={{ color: "#64748b" }}>{r.event_name || "—"}</td>
