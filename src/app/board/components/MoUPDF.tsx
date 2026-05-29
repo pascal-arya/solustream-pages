@@ -94,8 +94,8 @@ export default function MoUPDF({
                         <div style={{ position: "relative", zIndex: 10, paddingLeft: "64px", paddingRight: "64px", paddingBottom: "110px", paddingTop: isFirstPage ? "48px" : "80px", display: "flex", flexDirection: "column", height: "100%", boxSizing: "border-box" }}>
                             {/* Logo */}
                             {isFirstPage && (
-                                <div style={{ marginBottom: "16px" }}>
-                                    <Image src="/Assets/Invoice/Logo.png" alt="Logo" width={140} height={38} priority unoptimized />
+                                <div style={{ marginBottom: "12px" }}>
+                                    <Image src="/Assets/Invoice/Logo.png" alt="Logo" width={88} height={88} priority style={{ objectFit: "contain", objectPosition: "left" }} unoptimized />
                                 </div>
                             )}
 
@@ -262,8 +262,8 @@ export default function MoUPDF({
                         </div>
 
                         {/* Footer */}
-                        <div style={{ position: "absolute", bottom: "12px", left: "-20px", width: "834px" }}>
-                            <Image src="/Assets/Invoice/Footer.png" alt="Footer" width={834} height={79} style={{ width: "100%", height: "auto" }} unoptimized />
+                        <div style={{ position: "absolute", bottom: "12px", left: "5px", width: "784px" }}>
+                            <Image src="/Assets/Invoice/Footer.png" alt="Footer" width={784} height={74} style={{ width: "100%", height: "auto" }} unoptimized />
                         </div>
                     </div>
                 );
