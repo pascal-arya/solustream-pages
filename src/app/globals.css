@@ -608,7 +608,7 @@ button {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding: 48px 0;
   margin-top: 80px;
-  background: linear-gradient(to top right, #060173 0%, #0240BA 100%);
+  background: linear-gradient(to top right, #02002e 0%, #031e61 100%);
   color: #ffffff;
   display: flex;
   justify-content: center;
@@ -641,7 +641,6 @@ button {
   height: 40px;
   width: auto;
   object-fit: contain;
-  filter: brightness(0) invert(1); /* Makes the Solustream logo crisp white for high contrast on blue */
 }
 
 .footer-copyright {
