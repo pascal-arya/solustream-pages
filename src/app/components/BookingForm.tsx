@@ -75,11 +75,43 @@ export default function BookingForm() {
     setErrors({});
     setIsSubmitting(true);
 
-    // Simulate API Submission
+    // Helpers to get human-readable labels for the WhatsApp template
+    const getNeedsLabel = (val: string) => {
+      const option = needsOptions.find(o => o.value === val);
+      return option ? option.label : val;
+    };
+
+    const getBudgetLabel = (val: string) => {
+      const option = budgetOptions.find(o => o.value === val);
+      return option ? option.label : val;
+    };
+
+    // Format WhatsApp template message
+    const message = `Halo Tim Solustream! 🚀
+
+Saya ingin melakukan booking layanan live streaming. Berikut detail rencana event saya:
+
+👤 *Nama Pemesan*: ${userName}
+📅 *Nama Event*: ${eventName}
+📆 *Tanggal Event*: ${eventDate}
+📍 *Lokasi Event*: ${eventLocation}
+🎥 *Kebutuhan Streaming*: ${getNeedsLabel(needs)}
+💰 *Perkiraan Budget*: ${getBudgetLabel(budgetRange)}
+
+📝 *Detail Kebutuhan*: 
+${description.trim() ? description : '-'}
+
+Terima kasih! Saya tunggu konfirmasi dari tim Solustream.`;
+
+    const encodedText = encodeURIComponent(message);
+    const waUrl = `https://wa.me/6281221552324?text=${encodedText}`;
+
+    // Simulate API submission, open WhatsApp in a new tab, and show the success confirmation modal
     setTimeout(() => {
       setIsSubmitting(false);
+      window.open(waUrl, '_blank');
       setShowModal(true);
-    }, 1200);
+    }, 1000);
   };
 
   return (
