@@ -605,10 +605,11 @@ button {
 /* Shared Footer Styles */
 .global-footer {
   width: 100%;
-  border-top: 1px solid #e4e4e7;
-  padding: 40px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 48px 0;
   margin-top: 80px;
-  background-color: transparent;
+  background: linear-gradient(to top right, #060173 0%, #0240BA 100%);
+  color: #ffffff;
   display: flex;
   justify-content: center;
 }
@@ -640,11 +641,12 @@ button {
   height: 40px;
   width: auto;
   object-fit: contain;
+  filter: brightness(0) invert(1); /* Makes the Solustream logo crisp white for high contrast on blue */
 }
 
 .footer-copyright {
   font-size: 14px;
-  color: #71717a;
+  color: rgba(255, 255, 255, 0.6);
   font-weight: 400;
 }
 
@@ -664,7 +666,7 @@ button {
   font-size: 14px;
   text-transform: uppercase;
   font-weight: 600;
-  color: #18181b;
+  color: #ffffff;
   letter-spacing: 0.05em;
 }
 
@@ -679,14 +681,14 @@ button {
   align-items: center;
   gap: 10px;
   font-size: 14px;
-  color: #4b5563;
+  color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
   transition: color 0.2s ease, transform 0.2s ease;
   font-weight: 400;
 }
 
 .footer-link-item:hover {
-  color: #002db3;
+  color: #ffffff;
   transform: translateX(2px);
 }
 
@@ -732,4 +734,12 @@ button {
   .footer-link-item:hover {
     transform: none;
   }
+}
+
+/* Card styling specifically for the Footer inside the Satisfaction Forms page container */
+.form-page-container .global-footer {
+  border-radius: 16px;
+  border-top: none;
+  margin-top: 48px;
+  box-shadow: 0 10px 30px rgba(6, 1, 115, 0.1);
 }
