@@ -6,6 +6,7 @@ import Solutions from "./components/Solutions";
 import Reasons from "./components/Reasons";
 import BookingForm from "./components/BookingForm";
 import Footer from "./components/Footer";
+import FloatingBookButton from "./components/FloatingBookButton";
 import "./landing.css"; // Ensure landing styles are loaded
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
       <Reasons />
       <BookingForm />
       <Footer />
+      <FloatingBookButton />
     </main>
   );
 }

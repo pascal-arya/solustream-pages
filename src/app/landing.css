@@ -7,10 +7,20 @@
   background-color: transparent;
   display: flex;
   justify-content: center;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
-  z-index: 50;
+  z-index: 1000;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.landing-navbar.scrolled {
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.7);
+  padding: 12px 0;
 }
 
 .landing-navbar-container {
@@ -456,6 +466,47 @@
   line-height: 1.6;
   opacity: 0.9;
   font-weight: 400;
+}
+
+/* Floating Action Button (CTA) */
+.floating-book-btn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 999;
+  background: linear-gradient(to top right, #060173 0%, #0240BA 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 9999px;
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(6, 1, 115, 0.3);
+  opacity: 0;
+  transform: translateY(20px) scale(0.9);
+  pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.floating-book-btn.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.floating-book-btn:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 16px 36px rgba(6, 1, 115, 0.45);
+}
+
+.floating-book-icon {
+  width: 20px;
+  height: 20px;
+  stroke: #ffffff;
 }
 
 /* Booking Form Section Styles */
@@ -938,6 +989,20 @@
 
   .reason-card-desc {
     font-size: 14px;
+  }
+
+  /* Floating Book Button Mobile Responsiveness */
+  .floating-book-btn {
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    font-size: 13px;
+    gap: 8px;
+  }
+
+  .floating-book-icon {
+    width: 16px;
+    height: 16px;
   }
 
   /* Booking Mobile Responsiveness */

@@ -1,13 +1,30 @@
-import React from 'react';
+"use client";
+
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import '../landing.css';
 
 export default function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 40) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <nav className="landing-navbar">
+    <nav className={`landing-navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="landing-navbar-container">
-        {/* Empty div to balance flex space-between if needed, or just rely on absolute positioning for logo */}
+        {/* Balanced menu spacer */}
         <div style={{ width: "32px" }}></div>
 
         <Link href="/" className="landing-logo-link">

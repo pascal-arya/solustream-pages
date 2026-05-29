@@ -40,7 +40,7 @@ export default function Hero() {
                 className="landing-btn btn-blue"
                 onClick={(e) => {
                   e.preventDefault();
-                  window.dispatchEvent(new Event('reveal-booking-form'));
+                  document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }}
               >
                 Book

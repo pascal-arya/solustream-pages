@@ -37,21 +37,6 @@ export default function BookingForm() {
     { value: 'custom', label: 'Custom Solution' },
   ];
 
-  // Intercept the Hero Book button click to reveal the form
-  useEffect(() => {
-    const handleReveal = () => {
-      setIsFormRevealed(true);
-      setTimeout(() => {
-        sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 100);
-    };
-
-    window.addEventListener('reveal-booking-form', handleReveal);
-    return () => {
-      window.removeEventListener('reveal-booking-form', handleReveal);
-    };
-  }, []);
-
   const handleClear = () => {
     setUserName('');
     setEventName('');
