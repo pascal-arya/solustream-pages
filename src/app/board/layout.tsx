@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./tailwind-utils.css";
 
-const plusJakarta = Plus_Jakarta_Sans({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-plus-jakarta",
-  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
@@ -15,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function BoardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className={`${plusJakarta.variable} ${plusJakarta.className}`} style={{ minHeight: "100vh" }}>
+    <div className={`${inter.variable} ${inter.className}`} style={{ minHeight: "100vh" }}>
       {children}
     </div>
   );
