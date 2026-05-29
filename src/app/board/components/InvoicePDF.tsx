@@ -70,9 +70,9 @@ const S = {
   content: {
     position: "relative" as const,
     zIndex: 10,
-    paddingTop: "48px",
-    paddingLeft: "64px",
-    paddingRight: "64px",
+    paddingTop: "72px",
+    paddingLeft: "84px",
+    paddingRight: "84px",
     paddingBottom: "100px",
     display: "flex",
     flexDirection: "column" as const,
@@ -167,7 +167,7 @@ export default function InvoicePDF({
               {isFirstPage && (
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "20px", paddingLeft: "4px", paddingRight: "8px" }}>
                   <div style={{ display: "flex", flexDirection: "column" }}>
-                    <h1 style={{ fontSize: "44px", letterSpacing: "-0.02em", color: "#fff", fontWeight: 900, lineHeight: 1, margin: "0 0 4px" }}>INVOICE</h1>
+                    <h1 style={{ fontSize: "44px", letterSpacing: "-0.02em", color: "#fff", fontWeight: 700, lineHeight: 1, margin: "0 0 4px" }}>INVOICE</h1>
                     <p style={{ fontSize: "20px", color: "#fff", fontWeight: 300, letterSpacing: "0.1em", margin: 0 }}>
                       {invoiceNumber || "SOLU26-027"}
                     </p>
