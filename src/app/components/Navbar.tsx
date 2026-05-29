@@ -34,9 +34,9 @@ export default function Navbar() {
             width={180}
             height={64}
             className="landing-logo"
-            style={{ 
-              width: "auto", 
-              height: scrolled ? "50px" : "100px",
+            style={{
+              width: "auto",
+              height: scrolled ? "80px" : "100px",
               transition: "height 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
             }}
           />
