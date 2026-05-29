@@ -173,7 +173,7 @@ export default function InvoicePDF({
                     </p>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-                    <p style={{ color: "#fff", fontWeight: 700, fontSize: "14px", lineHeight: 1, margin: "0 0 4px" }}>Total Due:</p>
+                    <p style={{ color: "#fff", fontWeight: 500, fontSize: "14px", lineHeight: 1, margin: "0 0 4px" }}>Total Due:</p>
                     <h2 style={{ fontSize: "36px", color: "#fff", fontWeight: 300, lineHeight: 1, margin: 0 }}>
                       Rp{grandTotal.toLocaleString("id-ID")}
                     </h2>
@@ -185,13 +185,13 @@ export default function InvoicePDF({
               {isFirstPage && (
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px", paddingLeft: "4px", paddingRight: "8px" }}>
                   <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                    <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "16px", lineHeight: 1, margin: 0 }}>Invoice to:</h3>
-                    <p style={{ color: "#fff", fontSize: "22px", fontWeight: 800, lineHeight: 1, margin: 0 }}>{clientName || "Raka Sanjaya"}</p>
+                    <h3 style={{ color: "#fff", fontWeight: 500, fontSize: "16px", lineHeight: 1, margin: 0 }}>Invoice to:</h3>
+                    <p style={{ color: "#fff", fontSize: "22px", fontWeight: 400, lineHeight: 1, margin: 0 }}>{clientName || "Raka Sanjaya"}</p>
                     <p style={{ color: "#fff", fontWeight: 300, fontSize: "15px", lineHeight: 1, margin: 0 }}>{clientPhone || "087777964411"}</p>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "2px" }}>
-                    <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "16px", lineHeight: 1, margin: 0 }}>Payment to:</h3>
-                    <p style={{ color: "#fff", fontSize: "20px", fontWeight: 700, lineHeight: 1, margin: 0 }}>{bankAccount || "8415886230 (BCA)"}</p>
+                    <h3 style={{ color: "#fff", fontWeight: 500, fontSize: "16px", lineHeight: 1, margin: 0 }}>Payment to:</h3>
+                    <p style={{ color: "#fff", fontSize: "20px", fontWeight: 400, lineHeight: 1, margin: 0 }}>{bankAccount || "8415886230 (BCA)"}</p>
                     <p style={{ color: "#fff", fontWeight: 300, fontSize: "15px", lineHeight: 1, margin: 0 }}>{bankUser || "Pascal Arya Nugroho"}</p>
                   </div>
                 </div>
@@ -202,11 +202,11 @@ export default function InvoicePDF({
               {isFirstPage && (
                 <div style={{ display: "flex", gap: "48px", marginBottom: "24px", paddingLeft: "4px" }}>
                   <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                    <p style={{ color: "#fff", fontWeight: 700, fontSize: "16px", lineHeight: 1, margin: 0 }}>Invoice Date:</p>
+                    <p style={{ color: "#fff", fontWeight: 500, fontSize: "16px", lineHeight: 1, margin: 0 }}>Invoice Date:</p>
                     <p style={{ color: "#fff", fontWeight: 300, lineHeight: 1, margin: 0 }}>{invoiceDate}</p>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                    <p style={{ color: "#fff", fontWeight: 700, fontSize: "16px", lineHeight: 1, margin: 0 }}>Due Date:</p>
+                    <p style={{ color: "#fff", fontWeight: 500, fontSize: "16px", lineHeight: 1, margin: 0 }}>Due Date:</p>
                     <p style={{ color: "#fff", fontWeight: 300, lineHeight: 1, margin: 0 }}>{dueDate}</p>
                   </div>
                 </div>
@@ -223,12 +223,12 @@ export default function InvoicePDF({
                   border: "1px solid white", marginBottom: "8px",
                   alignItems: "center", backgroundColor: "rgba(217,217,217,0.1)"
                 }}>
-                  <div style={{ color: "#fff", fontSize: "16px", fontWeight: 700 }}>No.</div>
+                  <div style={{ color: "#fff", fontSize: "16px", fontWeight: 600 }}>No.</div>
                   <div style={{ display: "grid", gridTemplateColumns: "5fr 2fr 1fr 3fr", gap: "8px" }}>
-                    <div style={{ color: "#fff", fontSize: "16px", fontWeight: 700, paddingLeft: "8px" }}>Item Description</div>
-                    <div style={{ color: "#fff", fontSize: "16px", fontWeight: 700, textAlign: "right" as const }}>Rate</div>
-                    <div style={{ color: "#fff", fontSize: "16px", fontWeight: 700, textAlign: "center" as const }}>Qty</div>
-                    <div style={{ color: "#fff", fontSize: "16px", fontWeight: 700, textAlign: "right" as const, paddingRight: "16px" }}>Total</div>
+                    <div style={{ color: "#fff", fontSize: "16px", fontWeight: 600, paddingLeft: "8px" }}>Item Description</div>
+                    <div style={{ color: "#fff", fontSize: "16px", fontWeight: 600, textAlign: "right" as const }}>Rate</div>
+                    <div style={{ color: "#fff", fontSize: "16px", fontWeight: 600, textAlign: "center" as const }}>Qty</div>
+                    <div style={{ color: "#fff", fontSize: "16px", fontWeight: 600, textAlign: "right" as const, paddingRight: "16px" }}>Total</div>
                   </div>
                 </div>
 
@@ -247,7 +247,7 @@ export default function InvoicePDF({
                         </div>
                         <div style={{ display: "grid", gridTemplateColumns: "5fr 2fr 1fr 3fr", gap: "8px", alignItems: "center" }}>
                           <div style={{ paddingLeft: "8px", overflow: "hidden" }}>
-                            <p style={{ color: "#fff", fontWeight: 600, fontSize: "15px", lineHeight: 1.2, margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.name || "Item Name"}</p>
+                            <p style={{ color: "#fff", fontWeight: 400, fontSize: "15px", lineHeight: 1.2, margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.name || "Item Name"}</p>
                             <p style={{ color: "rgba(255,255,255,0.75)", fontWeight: 300, fontSize: "12px", lineHeight: 1.2, margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.description || "Item description"}</p>
                           </div>
                           <div style={{ color: "#fff", fontWeight: 400, textAlign: "right" as const, fontSize: "15px" }}>
@@ -279,7 +279,7 @@ export default function InvoicePDF({
                       </div>
                     )}
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 24px", borderRadius: "12px", border: "1px solid white", width: "300px", backgroundColor: "rgba(217,217,217,0.1)" }}>
-                      <span style={{ color: "#fff", fontWeight: 700, fontSize: "14px" }}>Grand Total</span>
+                      <span style={{ color: "#fff", fontWeight: 600, fontSize: "14px" }}>Grand Total</span>
                       <span style={{ color: "#fff", fontWeight: 400, fontSize: "16px", paddingRight: "16px" }}>Rp{grandTotal.toLocaleString("id-ID")}</span>
                     </div>
                   </div>
@@ -289,7 +289,7 @@ export default function InvoicePDF({
                 {isLastPage && !overflowTnC && (
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "48px", marginTop: "24px", alignItems: "flex-start" }}>
                     <div>
-                      <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "16px", marginBottom: "4px", margin: "0 0 4px" }}>Syarat dan Ketentuan</h3>
+                      <h3 style={{ color: "#fff", fontWeight: 500, fontSize: "16px", marginBottom: "4px", margin: "0 0 4px" }}>Syarat dan Ketentuan</h3>
                       <p style={{ color: "#fff", fontWeight: 400, fontSize: "14px", lineHeight: "tight", maxWidth: "280px", margin: 0 }}>
                         Pembayaran yang sudah dibayarkan dan/atau sudah disetujui sebelumnya tidak dapat di-refund
                         <br /><br />
@@ -298,7 +298,7 @@ export default function InvoicePDF({
                     </div>
                     <div style={{ display: "flex", justifyContent: "flex-end" }}>
                       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", width: "160px" }}>
-                        <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "16px", marginBottom: "8px", margin: "0 0 8px" }}>Best Regards,</h3>
+                        <h3 style={{ color: "#fff", fontWeight: 500, fontSize: "16px", marginBottom: "8px", margin: "0 0 8px" }}>Best Regards,</h3>
                         <div style={{ border: "1px solid rgba(255,255,255,0.5)", borderRadius: "12px", width: "100%", height: "100px", background: "transparent", marginBottom: "8px", position: "relative", overflow: "hidden" }}>
                           <Image src="/Assets/Invoice/Signature.png" alt="Signature" fill style={{ objectFit: "contain", padding: "8px" }} unoptimized />
                         </div>
@@ -311,8 +311,8 @@ export default function InvoicePDF({
             </div>
 
             {/* Footer */}
-            <div style={{ position: "absolute", bottom: "12px", left: "-20px", width: "834px" }}>
-              <Image src="/Assets/Invoice/Footer.png" alt="Footer" width={834} height={79} style={{ width: "100%", height: "auto" }} unoptimized />
+            <div style={{ position: "absolute", bottom: "12px", left: "5px", width: "784px" }}>
+              <Image src="/Assets/Invoice/Footer.png" alt="Footer" width={784} height={74} style={{ width: "100%", height: "auto" }} unoptimized />
             </div>
           </div>
         );
@@ -329,7 +329,7 @@ export default function InvoicePDF({
           <div style={{ ...S.content, paddingTop: "80px", paddingLeft: "68px", paddingRight: "68px" }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "48px", marginTop: "40px", alignItems: "flex-start" }}>
               <div>
-                <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "16px", margin: "0 0 4px" }}>Syarat dan Ketentuan</h3>
+                <h3 style={{ color: "#fff", fontWeight: 500, fontSize: "16px", margin: "0 0 4px" }}>Syarat dan Ketentuan</h3>
                 <p style={{ color: "#fff", fontWeight: 400, fontSize: "14px", lineHeight: "tight", maxWidth: "280px", margin: 0 }}>
                   Pembayaran yang sudah dibayarkan dan/atau sudah disetujui sebelumnya tidak dapat di-refund
                   <br /><br />
@@ -338,7 +338,7 @@ export default function InvoicePDF({
               </div>
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", width: "160px" }}>
-                  <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "16px", margin: "0 0 8px" }}>Best Regards,</h3>
+                  <h3 style={{ color: "#fff", fontWeight: 500, fontSize: "16px", margin: "0 0 8px" }}>Best Regards,</h3>
                   <div style={{ border: "1px solid rgba(255,255,255,0.5)", borderRadius: "12px", width: "100%", height: "100px", background: "transparent", marginBottom: "8px", position: "relative", overflow: "hidden" }}>
                     <Image src="/Assets/Invoice/Signature.png" alt="Signature" fill style={{ objectFit: "contain", padding: "8px" }} unoptimized />
                   </div>
@@ -347,8 +347,8 @@ export default function InvoicePDF({
               </div>
             </div>
           </div>
-          <div style={{ position: "absolute", bottom: "20px", left: "-20px", width: "834px" }}>
-            <Image src="/Assets/Invoice/Footer.png" alt="Footer" width={834} height={79} style={{ width: "100%", height: "auto" }} unoptimized />
+          <div style={{ position: "absolute", bottom: "20px", left: "5px", width: "784px" }}>
+            <Image src="/Assets/Invoice/Footer.png" alt="Footer" width={784} height={74} style={{ width: "100%", height: "auto" }} unoptimized />
           </div>
         </div>
       )}
