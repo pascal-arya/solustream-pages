@@ -1,0 +1,7 @@
+/*
+  Import only Tailwind utility classes — no Preflight/base reset.
+  This scoped import prevents Tailwind from overriding the global
+  landing page styles while still providing utility classes needed
+  by InvoicePDF and MoUPDF components.
+*/
+@import "tailwindcss/utilities";

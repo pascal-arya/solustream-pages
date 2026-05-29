@@ -4,323 +4,270 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 type MoUPDFProps = {
-  mouNumber: string;
-  date: string;
-  partyA: {
-    name: string;
-    representative: string;
-    position: string;
-  };
-  partyB: {
-    name: string;
-    representative: string;
-    position: string;
-  };
-  clauses: { id: string; title: string; content: string }[];
-  mouMode?: "guided" | "manual";
-  manualContent?: string;
+    mouNumber: string;
+    date: string;
+    partyA: { name: string; representative: string; position: string };
+    partyB: { name: string; representative: string; position: string };
+    clauses: { id: string; title: string; content: string }[];
+    mouMode?: "guided" | "manual";
+    manualContent?: string;
+};
+
+const pageBase: React.CSSProperties = {
+    position: "relative",
+    overflow: "hidden",
+    flexShrink: 0,
+    width: "794px",
+    height: "1123px",
+    pageBreakAfter: "always",
+    pageBreakInside: "avoid",
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
 };
 
 export default function MoUPDF({
-  mouNumber,
-  date,
-  partyA,
-  partyB,
-  clauses: guidedClauses,
-  mouMode = "guided",
-  manualContent = "",
+    mouNumber,
+    date,
+    partyA,
+    partyB,
+    clauses: guidedClauses,
+    mouMode = "guided",
+    manualContent = "",
 }: MoUPDFProps) {
-  const clauses =
-    mouMode === "manual"
-      ? manualContent
-          .split("\n\n")
-          .filter((p) => p.trim())
-          .map((p, i) => ({
-            id: `manual-${i}`,
-            title: "",
-            content: p,
-          }))
-      : guidedClauses;
+    const clauses =
+        mouMode === "manual"
+            ? manualContent.split("\n\n").filter((p) => p.trim()).map((p, i) => ({ id: `manual-${i}`, title: "", content: p }))
+            : guidedClauses;
 
-  const PAGE_HEIGHT_TOTAL = 1123;
-  const FOOTER_START = 1024;
-  const BUFFER = 10;
-  const FIRST_PAGE_CONTENT_LIMIT = FOOTER_START - BUFFER - 430;
-  const SUBSEQUENT_PAGE_LIMIT = FOOTER_START - BUFFER - 60;
+    const PAGE_HEIGHT_TOTAL = 1123;
+    const FOOTER_START = 1024;
+    const BUFFER = 10;
+    const FIRST_PAGE_CONTENT_LIMIT = FOOTER_START - BUFFER - 430;
+    const SUBSEQUENT_PAGE_LIMIT = FOOTER_START - BUFFER - 60;
 
-  const pages: { id: string; title: string; content: string }[][] = [];
-  let currentPage: { id: string; title: string; content: string }[] = [];
-  let currentHeight = 0;
+    const pages: { id: string; title: string; content: string }[][] = [];
+    let currentPage: { id: string; title: string; content: string }[] = [];
+    let currentHeight = 0;
 
-  clauses.forEach((clause) => {
-    const isFirstPage = pages.length === 0;
-    const limit = isFirstPage ? FIRST_PAGE_CONTENT_LIMIT : SUBSEQUENT_PAGE_LIMIT;
+    clauses.forEach((clause) => {
+        const isFirstPage = pages.length === 0;
+        const limit = isFirstPage ? FIRST_PAGE_CONTENT_LIMIT : SUBSEQUENT_PAGE_LIMIT;
+        let weight = 45;
+        const isRoles = clause.title.toLowerCase().includes("roles") || clause.title.toLowerCase().includes("responsibility");
+        const isFinance = clause.title.toLowerCase().includes("financial") || clause.title.toLowerCase().includes("payment schedule");
+        if (isRoles) {
+            const providerPoints = clause.content.split("\n\n")[0]?.split("\n").length - 1 || 0;
+            const clientPoints = clause.content.split("\n\n")[1]?.split("\n").length - 1 || 0;
+            weight = 110 + Math.max(providerPoints, clientPoints) * 28;
+        } else if (isFinance) {
+            weight = 190;
+        } else {
+            weight = 35 + Math.ceil(clause.content.length / 85) * 28;
+        }
+        if (currentHeight + weight > limit) {
+            pages.push(currentPage);
+            currentPage = [clause];
+            currentHeight = weight;
+        } else {
+            currentPage.push(clause);
+            currentHeight += weight;
+        }
+    });
+    if (currentPage.length > 0) pages.push(currentPage);
+    if (pages.length === 0) pages.push([]);
 
-    let weight = 45;
-    const isRoles =
-      clause.title.toLowerCase().includes("roles") ||
-      clause.title.toLowerCase().includes("responsibility");
-    const isFinance =
-      clause.title.toLowerCase().includes("financial") ||
-      clause.title.toLowerCase().includes("payment schedule");
+    return (
+        <div style={{ background: "white", margin: "0 auto", position: "relative", display: "flex", flexDirection: "column", gap: "16px", width: "794px" }}>
+            {pages.map((pageClauses, pageIndex) => {
+                const isFirstPage = pageIndex === 0;
+                const isLastPage = pageIndex === pages.length - 1;
 
-    if (isRoles) {
-      const providerPoints = clause.content.split("\n\n")[0]?.split("\n").length - 1 || 0;
-      const clientPoints = clause.content.split("\n\n")[1]?.split("\n").length - 1 || 0;
-      const maxPoints = Math.max(providerPoints, clientPoints);
-      weight = 110 + maxPoints * 28;
-    } else if (isFinance) {
-      weight = 190;
-    } else {
-      const lines = Math.ceil(clause.content.length / 85);
-      weight = 35 + lines * 28;
-    }
-
-    if (currentHeight + weight > limit) {
-      pages.push(currentPage);
-      currentPage = [clause];
-      currentHeight = weight;
-    } else {
-      currentPage.push(clause);
-      currentHeight += weight;
-    }
-  });
-
-  if (currentPage.length > 0) pages.push(currentPage);
-  if (pages.length === 0) pages.push([]);
-
-  return (
-    <div className="bg-white mx-auto relative flex flex-col gap-4" style={{ width: "794px" }}>
-      {pages.map((pageClauses, pageIndex) => {
-        const isFirstPage = pageIndex === 0;
-        const isLastPage = pageIndex === pages.length - 1;
-
-        return (
-          <div
-            key={pageIndex}
-            className="relative overflow-hidden shrink-0 pdf-page-canvas"
-            style={{
-              width: "794px",
-              height: `${PAGE_HEIGHT_TOTAL}px`,
-              pageBreakAfter: "always",
-              pageBreakInside: "avoid",
-            }}
-          >
-            <div className="absolute inset-x-0 bottom-0 z-0 h-[1123px] w-full pointer-events-none">
-              <Image
-                src="/Assets/Invoice/Background.png"
-                alt="Background"
-                fill
-                className="object-cover object-bottom"
-                priority
-                unoptimized
-              />
-            </div>
-            <div
-              className="absolute z-0 bg-black rounded-full pointer-events-none"
-              style={{ width: "600px", height: "600px", left: "-200px", top: "-200px", filter: "blur(120px)", opacity: 1 }}
-            />
-            <div
-              className="absolute z-0 bg-black rounded-full pointer-events-none"
-              style={{ width: "600px", height: "600px", left: "-200px", bottom: "-200px", filter: "blur(120px)", opacity: 1 }}
-            />
-
-            <div className={`relative z-10 px-16 flex flex-col h-full pb-[110px] ${isFirstPage ? "pt-12" : "pt-20"}`}>
-              {isFirstPage && (
-                <div className="mb-4">
-                  <Image src="/Assets/Invoice/Logo.png" alt="Logo" width={140} height={38} priority unoptimized />
-                </div>
-              )}
-
-              {isFirstPage && (
-                <div className="mb-8 pl-1">
-                  <h1 className="text-[36px] tracking-tight text-white font-black leading-tight mb-4">
-                    MEMORANDUM OF UNDERSTANDING
-                  </h1>
-                  <div className="flex items-end gap-16 border-b border-white pb-4">
-                    <div>
-                      <p className="text-white font-light tracking-widest text-[10px] mb-1 uppercase">Reference Number</p>
-                      <p className="text-lg text-white font-bold">{mouNumber || "MOU/2026/001"}</p>
-                    </div>
-                    <div>
-                      <p className="text-white font-light tracking-widest text-[10px] mb-1 uppercase">Date</p>
-                      <p className="text-lg text-white font-bold">{date}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {isFirstPage && (
-                <div className="grid grid-cols-2 gap-8 mb-8 pl-1">
-                  <div className="flex flex-col gap-2">
-                    <h3 className="text-white font-black text-xs uppercase tracking-[0.2em]">FIRST PARTY</h3>
-                    <div className="bg-white/5 border border-white p-3 rounded-xl backdrop-blur-sm">
-                      <p className="text-white font-bold text-base mb-1">{partyA.name}</p>
-                      <p className="text-white text-[12px] font-medium leading-tight">{partyA.representative}</p>
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <h3 className="text-white font-black text-xs uppercase tracking-[0.2em]">SECOND PARTY</h3>
-                    <div className="bg-white/5 border border-white p-3 rounded-xl backdrop-blur-sm">
-                      <p className="text-white font-bold text-base mb-1">{partyB.name || "Client Name"}</p>
-                      <p className="text-white text-[12px] font-medium leading-tight">{partyB.representative || "Representative"}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <div className="pl-1 space-y-6">
-                {pageClauses.map((clause, idx) => {
-                  const articleNum = clauses.findIndex((c) => c.id === clause.id) + 1;
-                  const isRoles =
-                    clause.title.toLowerCase().includes("roles") ||
-                    clause.title.toLowerCase().includes("responsibility");
-                  const isFinance =
-                    clause.title.toLowerCase().includes("financial") ||
-                    clause.title.toLowerCase().includes("payment schedule");
-
-                  let totalFeeStr = "",
-                    depositAmountStr = "",
-                    finalAmountStr = "",
-                    depositPercent = "",
-                    finalPercent = "",
-                    dueDateStr = "";
-                  if (isFinance) {
-                    totalFeeStr = clause.content.match(/Total Project Fee: (Rp[0-9.,]+)/)?.[1] || "";
-                    depositAmountStr = clause.content.match(/Deposit: \d+% \((Rp[0-9.,]+)\)/)?.[1] || "";
-                    finalAmountStr = clause.content.match(/Final Payment: \d+% \((Rp[0-9.,]+)\)/)?.[1] || "";
-                    depositPercent = clause.content.match(/Deposit: (\d+)%/)?.[1] || "";
-                    finalPercent = clause.content.match(/Final Payment: (\d+)%/)?.[1] || "";
-                    dueDateStr = clause.content.match(/due on ([\d/]+)/)?.[1] || "";
-                  }
-
-                  return (
-                    <div key={idx} className="space-y-3">
-                      {clause.title && (
-                        <h4 className="text-white font-bold text-lg flex items-center gap-3">
-                          <span className="bg-white text-blue-900 w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-black">
-                            {articleNum}
-                          </span>
-                          {clause.title}
-                        </h4>
-                      )}
-
-                      {isRoles ? (
-                        <div className="grid grid-cols-2 gap-3 pl-8 mt-6">
-                          <div className="bg-white/5 border border-white rounded-xl p-3 flex flex-col gap-2">
-                            <p className="text-white font-black text-[12px] tracking-widest border-b border-white pb-1.5">Provider Role</p>
-                            <div className="space-y-1">
-                              {clause.content.split("\n\n")[0]?.split("\n").slice(1).map((p, i) => (
-                                <div key={i} className="text-white text-sm font-light leading-relaxed flex gap-2">
-                                  <span className="text-white mt-0.5 shrink-0">•</span>
-                                  <div className="flex-1">
-                                    <ReactMarkdown>{p.replace(/^- /, "")}</ReactMarkdown>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                          <div className="bg-white/5 border border-white rounded-xl p-3 flex flex-col gap-2">
-                            <p className="text-white font-black text-[12px] tracking-widest border-b border-white pb-1.5">Client/Partner Role</p>
-                            <div className="space-y-1">
-                              {clause.content.split("\n\n")[1]?.split("\n").slice(1).map((p, i) => (
-                                <div key={i} className="text-white text-sm font-light leading-relaxed flex gap-2">
-                                  <span className="text-white mt-0.5 shrink-0">•</span>
-                                  <div className="flex-1">
-                                    <ReactMarkdown>{p.replace(/^- /, "")}</ReactMarkdown>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
+                return (
+                    <div key={pageIndex} style={{ ...pageBase, height: `${PAGE_HEIGHT_TOTAL}px` }}>
+                        {/* Background */}
+                        <div style={{ position: "absolute", inset: 0, zIndex: 0, height: "1123px", width: "100%", pointerEvents: "none" }}>
+                            <Image src="/Assets/Invoice/Background.png" alt="Background" fill style={{ objectFit: "cover", objectPosition: "bottom" }} priority unoptimized />
                         </div>
-                      ) : isFinance ? (
-                        <div className="pl-8 space-y-3 mt-2">
-                          <div className="bg-white/10 border border-white rounded-lg py-2 px-4 flex justify-between items-center shadow-lg shadow-black/5">
-                            <div className="flex items-center gap-6">
-                              <div className="flex items-center gap-4">
-                                <span className="text-[10px] font-black text-white/70 tracking-widest uppercase">Total Project Investment</span>
-                                <span className="text-xl text-white font-black">{totalFeeStr}</span>
-                              </div>
-                              <div className="w-px h-5 bg-white/10" />
-                              <div className="flex items-center gap-4">
-                                <span className="text-[10px] font-black text-white/70 tracking-widest uppercase">Payment Terms</span>
-                                <span className="text-xs text-white font-bold tracking-tight italic">Net 4 Days</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="grid grid-cols-2 gap-3">
-                            <div className="bg-white/5 border border-white rounded-lg p-3 flex items-center justify-between">
-                              <div className="flex items-center gap-3">
-                                <span className="w-4 h-4 bg-white rounded-full flex items-center justify-center text-[8px] text-blue-900 font-bold">1</span>
-                                <div>
-                                  <p className="text-[12px] font-black text-white tracking-widest leading-none">Deposit</p>
-                                  <p className="text-base text-white font-bold leading-none mt-1">{depositAmountStr}</p>
-                                </div>
-                              </div>
-                              <p className="text-[12px] text-white font-bold">{depositPercent}%</p>
-                            </div>
-                            <div className="bg-white/5 border border-white rounded-lg p-3 flex items-center justify-between">
-                              <div className="flex items-center gap-3">
-                                <span className="w-4 h-4 bg-white rounded-full flex items-center justify-center text-[8px] text-blue-900 font-bold">2</span>
-                                <div>
-                                  <p className="text-[12px] font-black text-white tracking-widest leading-none">Final</p>
-                                  <p className="text-base text-white font-bold leading-none mt-1">{finalAmountStr}</p>
-                                </div>
-                              </div>
-                              <p className="text-[12px] text-white font-bold">Due {dueDateStr}</p>
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className={`text-white font-light text-base leading-relaxed ${clause.title ? "pl-8" : "pl-1"} markdown-content`}>
-                          <ReactMarkdown
-                            remarkPlugins={[remarkGfm]}
-                            components={{
-                              p: ({ ...props }) => <p className="mb-4 last:mb-0" {...props} />,
-                              ul: ({ ...props }) => <ul className="list-disc pl-5 mb-4 space-y-1" {...props} />,
-                              ol: ({ ...props }) => <ol className="list-decimal pl-5 mb-4 space-y-1" {...props} />,
-                              li: ({ ...props }) => <li className="mb-1" {...props} />,
-                              strong: ({ ...props }) => <strong className="font-bold text-white uppercase tracking-tight" {...props} />,
-                              em: ({ ...props }) => <em className="italic" {...props} />,
-                            }}
-                          >
-                            {clause.content}
-                          </ReactMarkdown>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+                        <div style={{ position: "absolute", zIndex: 0, background: "black", borderRadius: "50%", pointerEvents: "none", width: "600px", height: "600px", left: "-200px", top: "-200px", filter: "blur(120px)", opacity: 1 }} />
+                        <div style={{ position: "absolute", zIndex: 0, background: "black", borderRadius: "50%", pointerEvents: "none", width: "600px", height: "600px", left: "-200px", bottom: "-200px", filter: "blur(120px)", opacity: 1 }} />
 
-              {isLastPage && (
-                <div className="mt-4">
-                  <p className="text-white text-base font-medium italic mb-4 pl-1 leading-relaxed border-l-2 border-white/20 pl-4">
-                    By signing below, both parties confirm their agreement to abide by all the terms and conditions set forth in this Memorandum of Understanding.
-                  </p>
-                  <div className="grid grid-cols-2 gap-8 pl-1">
-                    <div className="flex flex-col items-center">
-                      <p className="text-white font-black text-[10px] tracking-widest uppercase mb-4 opacity-70">FIRST PARTY</p>
-                      <div className="border border-white rounded-xl w-[160px] h-[100px] bg-white relative overflow-hidden flex items-center justify-center p-2 mb-2" />
-                      <p className="text-white font-bold text-base">{partyA.representative || "Daffa Yordan"}</p>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <p className="text-white font-black text-[10px] tracking-widest uppercase mb-4 opacity-70">SECOND PARTY</p>
-                      <div className="w-[160px] h-[100px] mb-2 border border-white border-dashed rounded-xl flex items-center justify-center bg-white" />
-                      <p className="text-white font-bold text-base">{partyB.representative || "Second Party"}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+                        {/* Content */}
+                        <div style={{ position: "relative", zIndex: 10, paddingLeft: "64px", paddingRight: "64px", paddingBottom: "110px", paddingTop: isFirstPage ? "48px" : "80px", display: "flex", flexDirection: "column", height: "100%", boxSizing: "border-box" }}>
+                            {/* Logo */}
+                            {isFirstPage && (
+                                <div style={{ marginBottom: "16px" }}>
+                                    <Image src="/Assets/Invoice/Logo.png" alt="Logo" width={140} height={38} priority unoptimized />
+                                </div>
+                            )}
 
-            <div className="absolute bottom-3 -left-[20px] w-[834px]">
-              <Image src="/Assets/Invoice/Footer.png" alt="Footer" width={834} height={79} className="w-full h-auto object-bottom" unoptimized />
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
+                            {/* MoU Header */}
+                            {isFirstPage && (
+                                <div style={{ marginBottom: "32px", paddingLeft: "4px" }}>
+                                    <h1 style={{ fontSize: "36px", letterSpacing: "-0.02em", color: "#fff", fontWeight: 900, lineHeight: 1.2, marginBottom: "16px", margin: "0 0 16px" }}>
+                                        MEMORANDUM OF UNDERSTANDING
+                                    </h1>
+                                    <div style={{ display: "flex", alignItems: "flex-end", gap: "64px", borderBottom: "1px solid white", paddingBottom: "16px" }}>
+                                        <div>
+                                            <p style={{ color: "#fff", fontWeight: 300, letterSpacing: "0.1em", fontSize: "10px", marginBottom: "4px", textTransform: "uppercase" as const, margin: "0 0 4px" }}>Reference Number</p>
+                                            <p style={{ fontSize: "18px", color: "#fff", fontWeight: 700, margin: 0 }}>{mouNumber || "MOU/2026/001"}</p>
+                                        </div>
+                                        <div>
+                                            <p style={{ color: "#fff", fontWeight: 300, letterSpacing: "0.1em", fontSize: "10px", marginBottom: "4px", textTransform: "uppercase" as const, margin: "0 0 4px" }}>Date</p>
+                                            <p style={{ fontSize: "18px", color: "#fff", fontWeight: 700, margin: 0 }}>{date}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Parties */}
+                            {isFirstPage && (
+                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "32px", marginBottom: "32px", paddingLeft: "4px" }}>
+                                    {[
+                                        { label: "FIRST PARTY", party: partyA },
+                                        { label: "SECOND PARTY", party: partyB },
+                                    ].map(({ label, party }) => (
+                                        <div key={label} style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                                            <h3 style={{ color: "#fff", fontWeight: 900, fontSize: "12px", textTransform: "uppercase" as const, letterSpacing: "0.2em", margin: 0 }}>{label}</h3>
+                                            <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid white", padding: "12px", borderRadius: "12px" }}>
+                                                <p style={{ color: "#fff", fontWeight: 700, fontSize: "16px", marginBottom: "4px", margin: "0 0 4px" }}>{party.name || (label === "SECOND PARTY" ? "Client Name" : "Solustream Digital")}</p>
+                                                <p style={{ color: "#fff", fontSize: "12px", fontWeight: 500, lineHeight: "tight", margin: 0 }}>{party.representative || (label === "SECOND PARTY" ? "Representative" : "Daffa Yordan")}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Clauses */}
+                            <div style={{ paddingLeft: "4px", display: "flex", flexDirection: "column", gap: "24px" }}>
+                                {pageClauses.map((clause, idx) => {
+                                    const articleNum = clauses.findIndex((c) => c.id === clause.id) + 1;
+                                    const isRoles = clause.title.toLowerCase().includes("roles") || clause.title.toLowerCase().includes("responsibility");
+                                    const isFinance = clause.title.toLowerCase().includes("financial") || clause.title.toLowerCase().includes("payment schedule");
+
+                                    let totalFeeStr = "", depositAmountStr = "", finalAmountStr = "", depositPercent = "", dueDateStr = "";
+                                    if (isFinance) {
+                                        totalFeeStr = clause.content.match(/Total Project Fee: (Rp[0-9.,]+)/)?.[1] || "";
+                                        depositAmountStr = clause.content.match(/Deposit: \d+% \((Rp[0-9.,]+)\)/)?.[1] || "";
+                                        finalAmountStr = clause.content.match(/Final Payment: \d+% \((Rp[0-9.,]+)\)/)?.[1] || "";
+                                        depositPercent = clause.content.match(/Deposit: (\d+)%/)?.[1] || "";
+                                        dueDateStr = clause.content.match(/due on ([\d/]+)/)?.[1] || "";
+                                    }
+
+                                    return (
+                                        <div key={idx} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                                            {clause.title && (
+                                                <h4 style={{ color: "#fff", fontWeight: 700, fontSize: "18px", display: "flex", alignItems: "center", gap: "12px", margin: 0 }}>
+                                                    <span style={{ background: "white", color: "#1e3a8a", width: "20px", height: "20px", borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: 900, flexShrink: 0 }}>
+                                                        {articleNum}
+                                                    </span>
+                                                    {clause.title}
+                                                </h4>
+                                            )}
+
+                                            {isRoles ? (
+                                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", paddingLeft: "32px", marginTop: "24px" }}>
+                                                    {[
+                                                        { label: "Provider Role", lines: clause.content.split("\n\n")[0]?.split("\n").slice(1) || [] },
+                                                        { label: "Client/Partner Role", lines: clause.content.split("\n\n")[1]?.split("\n").slice(1) || [] },
+                                                    ].map(({ label, lines }) => (
+                                                        <div key={label} style={{ background: "rgba(255,255,255,0.05)", border: "1px solid white", borderRadius: "12px", padding: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                                                            <p style={{ color: "#fff", fontWeight: 900, fontSize: "12px", letterSpacing: "0.1em", borderBottom: "1px solid white", paddingBottom: "6px", margin: "0 0 6px", textTransform: "uppercase" as const }}>{label}</p>
+                                                            <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                                                                {lines.map((p, i) => (
+                                                                    <div key={i} style={{ color: "#fff", fontSize: "14px", fontWeight: 300, lineHeight: "relaxed", display: "flex", gap: "8px" }}>
+                                                                        <span style={{ color: "#fff", marginTop: "2px", flexShrink: 0 }}>•</span>
+                                                                        <span>{p.replace(/^- /, "")}</span>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : isFinance ? (
+                                                <div style={{ paddingLeft: "32px", display: "flex", flexDirection: "column", gap: "12px", marginTop: "8px" }}>
+                                                    <div style={{ background: "rgba(255,255,255,0.1)", border: "1px solid white", borderRadius: "8px", padding: "8px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                                        <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+                                                            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                                                                <span style={{ fontSize: "10px", fontWeight: 900, color: "rgba(255,255,255,0.7)", textTransform: "uppercase" as const, letterSpacing: "0.1em" }}>Total Project Investment</span>
+                                                                <span style={{ fontSize: "20px", color: "#fff", fontWeight: 900 }}>{totalFeeStr}</span>
+                                                            </div>
+                                                            <div style={{ width: "1px", height: "20px", background: "rgba(255,255,255,0.1)" }} />
+                                                            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                                                                <span style={{ fontSize: "10px", fontWeight: 900, color: "rgba(255,255,255,0.7)", textTransform: "uppercase" as const, letterSpacing: "0.1em" }}>Payment Terms</span>
+                                                                <span style={{ fontSize: "12px", color: "#fff", fontWeight: 700, fontStyle: "italic" }}>Net 4 Days</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                                                        {[
+                                                            { num: "1", label: "Deposit", amount: depositAmountStr, right: `${depositPercent}%` },
+                                                            { num: "2", label: "Final", amount: finalAmountStr, right: `Due ${dueDateStr}` },
+                                                        ].map(({ num, label, amount, right }) => (
+                                                            <div key={num} style={{ background: "rgba(255,255,255,0.05)", border: "1px solid white", borderRadius: "8px", padding: "12px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                                                                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                                                                    <span style={{ width: "16px", height: "16px", background: "white", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "8px", color: "#1e3a8a", fontWeight: 700, flexShrink: 0 }}>{num}</span>
+                                                                    <div>
+                                                                        <p style={{ fontSize: "12px", fontWeight: 900, color: "#fff", letterSpacing: "0.1em", lineHeight: 1, margin: "0 0 4px", textTransform: "uppercase" as const }}>{label}</p>
+                                                                        <p style={{ fontSize: "16px", color: "#fff", fontWeight: 700, lineHeight: 1, margin: 0 }}>{amount}</p>
+                                                                    </div>
+                                                                </div>
+                                                                <p style={{ fontSize: "12px", color: "#fff", fontWeight: 700, margin: 0 }}>{right}</p>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div style={{ color: "#fff", fontWeight: 300, fontSize: "16px", lineHeight: "relaxed", paddingLeft: clause.title ? "32px" : "4px" }}>
+                                                    <ReactMarkdown
+                                                        remarkPlugins={[remarkGfm]}
+                                                        components={{
+                                                            p: ({ ...props }) => <p style={{ marginBottom: "16px" }} {...props} />,
+                                                            ul: ({ ...props }) => <ul style={{ listStyleType: "disc", paddingLeft: "20px", marginBottom: "16px" }} {...props} />,
+                                                            ol: ({ ...props }) => <ol style={{ listStyleType: "decimal", paddingLeft: "20px", marginBottom: "16px" }} {...props} />,
+                                                            li: ({ ...props }) => <li style={{ marginBottom: "4px" }} {...props} />,
+                                                            strong: ({ ...props }) => <strong style={{ fontWeight: 700, color: "#fff", textTransform: "uppercase" as const }} {...props} />,
+                                                            em: ({ ...props }) => <em style={{ fontStyle: "italic" }} {...props} />,
+                                                        }}
+                                                    >
+                                                        {clause.content}
+                                                    </ReactMarkdown>
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Signatures on last page */}
+                            {isLastPage && (
+                                <div style={{ marginTop: "16px" }}>
+                                    <p style={{ color: "#fff", fontSize: "16px", fontWeight: 500, fontStyle: "italic", marginBottom: "16px", paddingLeft: "16px", borderLeft: "2px solid rgba(255,255,255,0.2)", lineHeight: "relaxed" }}>
+                                        By signing below, both parties confirm their agreement to abide by all the terms and conditions set forth in this Memorandum of Understanding.
+                                    </p>
+                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "32px", paddingLeft: "4px" }}>
+                                        {[
+                                            { label: "FIRST PARTY", name: partyA.representative || "Daffa Yordan", showSig: true },
+                                            { label: "SECOND PARTY", name: partyB.representative || "Second Party", showSig: false },
+                                        ].map(({ label, name, showSig }) => (
+                                            <div key={label} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                                <p style={{ color: "#fff", fontWeight: 900, fontSize: "10px", letterSpacing: "0.1em", textTransform: "uppercase" as const, marginBottom: "16px", opacity: 0.7, margin: "0 0 16px" }}>{label}</p>
+                                                <div style={{ border: showSig ? "1px solid white" : "1px dashed white", borderRadius: "12px", width: "160px", height: "100px", background: "white", marginBottom: "8px", position: "relative", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                                    {showSig && <Image src="/Assets/Invoice/Signature.png" alt="Signature" fill style={{ objectFit: "contain", padding: "8px" }} unoptimized />}
+                                                </div>
+                                                <p style={{ color: "#fff", fontWeight: 700, fontSize: "16px", margin: 0 }}>{name}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Footer */}
+                        <div style={{ position: "absolute", bottom: "12px", left: "-20px", width: "834px" }}>
+                            <Image src="/Assets/Invoice/Footer.png" alt="Footer" width={834} height={79} style={{ width: "100%", height: "auto" }} unoptimized />
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+    );
 }

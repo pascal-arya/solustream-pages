@@ -2,367 +2,349 @@ import React from "react";
 import Image from "next/image";
 
 export type InvoiceItem = {
-  id: string;
-  name: string;
-  description: string;
-  rate: number;
-  quantity: number;
+    id: string;
+    name: string;
+    description: string;
+    rate: number;
+    quantity: number;
 };
 
 type InvoicePDFProps = {
-  invoiceNumber: string;
-  clientName: string;
-  clientPhone: string;
-  items: InvoiceItem[];
-  bankAccount: string;
-  bankUser: string;
-  subtotal: number;
-  discountAmount: number;
-  grandTotal: number;
+    invoiceNumber: string;
+    clientName: string;
+    clientPhone: string;
+    items: InvoiceItem[];
+    bankAccount: string;
+    bankUser: string;
+    subtotal: number;
+    discountAmount: number;
+    grandTotal: number;
+};
+
+const S = {
+    page: {
+        position: "relative" as const,
+        overflow: "hidden",
+        flexShrink: 0,
+        width: "794px",
+        height: "1123px",
+        pageBreakAfter: "always" as const,
+        pageBreakInside: "avoid" as const,
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+    } as React.CSSProperties,
+    bgWrap: {
+        position: "absolute" as const,
+        inset: 0,
+        bottom: 0,
+        zIndex: 0,
+        height: "1123px",
+        width: "100%",
+        pointerEvents: "none" as const,
+    },
+    blurTop: {
+        position: "absolute" as const,
+        zIndex: 0,
+        background: "black",
+        borderRadius: "50%",
+        pointerEvents: "none" as const,
+        width: "600px",
+        height: "600px",
+        left: "-200px",
+        top: "-200px",
+        filter: "blur(120px)",
+        opacity: 1,
+    },
+    blurBottom: {
+        position: "absolute" as const,
+        zIndex: 0,
+        background: "black",
+        borderRadius: "50%",
+        pointerEvents: "none" as const,
+        width: "600px",
+        height: "600px",
+        left: "-200px",
+        bottom: "-200px",
+        filter: "blur(120px)",
+        opacity: 1,
+    },
+    content: {
+        position: "relative" as const,
+        zIndex: 10,
+        paddingTop: "48px",
+        paddingLeft: "64px",
+        paddingRight: "64px",
+        paddingBottom: "100px",
+        display: "flex",
+        flexDirection: "column" as const,
+        height: "100%",
+        boxSizing: "border-box" as const,
+    },
+    white: { color: "#ffffff" },
+    whiteMuted: { color: "rgba(255,255,255,0.7)" },
+    white80: { color: "rgba(255,255,255,0.8)" },
 };
 
 export default function InvoicePDF({
-  invoiceNumber,
-  clientName,
-  clientPhone,
-  items,
-  bankAccount,
-  bankUser,
-  subtotal,
-  discountAmount,
-  grandTotal,
+    invoiceNumber,
+    clientName,
+    clientPhone,
+    items,
+    bankAccount,
+    bankUser,
+    subtotal,
+    discountAmount,
+    grandTotal,
 }: InvoicePDFProps) {
-  const getItemWeight = (item: InvoiceItem) => {
-    const desc = item.description || "Item description";
-    const descLines = Math.max(1, Math.ceil(desc.length / 45));
-    return 1 + descLines;
-  };
+    const getItemWeight = (item: InvoiceItem) => {
+        const desc = item.description || "Item description";
+        const descLines = Math.max(1, Math.ceil(desc.length / 45));
+        return 1 + descLines;
+    };
 
-  const MAX_WEIGHT_FIRST_PAGE = 12;
-  const MAX_WEIGHT_SUBSEQUENT_PAGE = 20;
+    const MAX_WEIGHT_FIRST_PAGE = 12;
+    const MAX_WEIGHT_SUBSEQUENT_PAGE = 20;
 
-  const pages: InvoiceItem[][] = [];
-  let currentPage: InvoiceItem[] = [];
-  let currentWeight = 0;
+    const pages: InvoiceItem[][] = [];
+    let currentPage: InvoiceItem[] = [];
+    let currentWeight = 0;
 
-  items.forEach((item) => {
-    const weight = getItemWeight(item);
-    const isFirstPage = pages.length === 0;
-    const maxWeight = isFirstPage ? MAX_WEIGHT_FIRST_PAGE : MAX_WEIGHT_SUBSEQUENT_PAGE;
+    items.forEach((item) => {
+        const weight = getItemWeight(item);
+        const isFirstPage = pages.length === 0;
+        const maxWeight = isFirstPage ? MAX_WEIGHT_FIRST_PAGE : MAX_WEIGHT_SUBSEQUENT_PAGE;
+        if (currentWeight + weight > maxWeight && currentPage.length > 0) {
+            pages.push(currentPage);
+            currentPage = [item];
+            currentWeight = weight;
+        } else {
+            currentPage.push(item);
+            currentWeight += weight;
+        }
+    });
+    if (currentPage.length > 0) pages.push(currentPage);
 
-    if (currentWeight + weight > maxWeight && currentPage.length > 0) {
-      pages.push(currentPage);
-      currentPage = [item];
-      currentWeight = weight;
-    } else {
-      currentPage.push(item);
-      currentWeight += weight;
-    }
-  });
+    const lastPageItems = pages[pages.length - 1] || [];
+    const isOnlyOnePage = pages.length === 1;
+    const lastPageWeight = lastPageItems.reduce((acc, item) => acc + getItemWeight(item), 0);
+    const overflowTnC = isOnlyOnePage ? lastPageWeight > 11 : lastPageWeight > 18;
 
-  if (currentPage.length > 0) {
-    pages.push(currentPage);
-  }
+    const formatDate = (date: Date) => {
+        const d = date.getDate().toString().padStart(2, "0");
+        const m = (date.getMonth() + 1).toString().padStart(2, "0");
+        const y = date.getFullYear();
+        return `${d}/${m}/${y}`;
+    };
+    const today = new Date();
+    const invoiceDate = formatDate(today);
+    const dueDateObj = new Date(today);
+    dueDateObj.setDate(today.getDate() + 4);
+    const dueDate = formatDate(dueDateObj);
 
-  const lastPageItems = pages[pages.length - 1] || [];
-  const isOnlyOnePage = pages.length === 1;
-  const lastPageWeight = lastPageItems.reduce((acc, item) => acc + getItemWeight(item), 0);
-  const overflowTnC = isOnlyOnePage ? lastPageWeight > 11 : lastPageWeight > 18;
-
-  return (
-    <div className="bg-white mx-auto relative flex flex-col gap-4" style={{ width: "794px" }}>
-      {pages.map((pageItems, pageIndex) => {
-        const isFirstPage = pageIndex === 0;
-        const isLastPage = pageIndex === pages.length - 1;
-
-        return (
-          <div
-            key={pageIndex}
-            className="relative overflow-hidden shrink-0 pdf-page-canvas"
-            style={{
-              width: "794px",
-              height: "1123px",
-              pageBreakAfter: "always",
-              pageBreakInside: "avoid",
-            }}
-          >
-            {/* Background Image */}
-            <div className="absolute inset-x-0 bottom-0 z-0 h-[1123px] w-full pointer-events-none">
-              <Image
-                src="/Assets/Invoice/Background.png"
-                alt="Background"
-                fill
-                className="object-cover object-bottom"
-                priority
-                unoptimized
-              />
-            </div>
-
-            {/* Top Left Black Blur Sphere */}
-            <div
-              className="absolute z-0 bg-black rounded-full pointer-events-none"
-              style={{
-                width: "600px",
-                height: "600px",
-                left: "-200px",
-                top: "-200px",
-                filter: "blur(120px)",
-                opacity: 1,
-              }}
-            />
-
-            {/* Bottom Left Black Blur Sphere */}
-            <div
-              className="absolute z-0 bg-black rounded-full pointer-events-none"
-              style={{
-                width: "600px",
-                height: "600px",
-                left: "-200px",
-                bottom: "-200px",
-                filter: "blur(120px)",
-                opacity: 1,
-              }}
-            />
-
-            {/* Content Container */}
-            <div className="relative z-10 pt-12 px-16 flex flex-col h-full pb-[100px]">
-              {isFirstPage && (
-                <div className="mb-4">
-                  <Image
-                    src="/Assets/Invoice/Logo.png"
-                    alt="Solustream Logo"
-                    width={140}
-                    height={38}
-                    priority
-                    style={{ objectFit: "contain" }}
-                    unoptimized
-                  />
-                </div>
-              )}
-
-              {isFirstPage && (
-                <div className="flex justify-between items-start mb-4 w-full pl-1 pr-2">
-                  <div className="flex flex-col">
-                    <h1 className="text-[44px] tracking-tight text-white font-black leading-none mb-1">
-                      INVOICE
-                    </h1>
-                    <p className="text-xl text-white font-light tracking-widest mb-6">
-                      {invoiceNumber ? `${invoiceNumber}` : "SOLU26-027"}
-                    </p>
-                    <div className="flex flex-col gap-1">
-                      <h3 className="text-white font-bold text-lg leading-none">Invoice to:</h3>
-                      <p className="text-white text-[22px] font-semibold leading-none">{clientName || "Raka Sanjaya"}</p>
-                      <p className="text-white font-light text-base leading-none">{clientPhone || "087777964411"}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col items-end">
-                    <div className="flex gap-2 items-baseline mb-4">
-                      <p className="text-white font-bold text-base mb-0 leading-tight">Total Due:</p>
-                    </div>
-                    <h2 className="text-4xl text-white font-light mb-6 leading-none">
-                      Rp{grandTotal.toLocaleString("id-ID")}
-                    </h2>
-                    <div className="flex flex-col items-end gap-1">
-                      <h3 className="text-white font-bold text-lg leading-none">Payment to:</h3>
-                      <p className="text-white text-[22px] font-normal leading-none">{bankAccount || "8415886230 (BCA)"}</p>
-                      <p className="text-white font-light text-base leading-none">{bankUser || "Pascal Arya Nugroho"}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {isFirstPage && (() => {
-                const today = new Date();
-                const formatDate = (date: Date) => {
-                  const d = date.getDate().toString().padStart(2, "0");
-                  const m = (date.getMonth() + 1).toString().padStart(2, "0");
-                  const y = date.getFullYear();
-                  return `${d}/${m}/${y}`;
-                };
-                const invoiceDate = formatDate(today);
-                const dueDateObj = new Date(today);
-                dueDateObj.setDate(today.getDate() + 4);
-                const dueDate = formatDate(dueDateObj);
-
+    return (
+        <div style={{ background: "white", margin: "0 auto", position: "relative", display: "flex", flexDirection: "column", gap: "16px", width: "794px" }}>
+            {pages.map((pageItems, pageIndex) => {
+                const isFirstPage = pageIndex === 0;
+                const isLastPage = pageIndex === pages.length - 1;
                 return (
-                  <div className="flex gap-12 mb-6 pl-1">
-                    <div className="flex flex-col gap-1">
-                      <p className="text-white font-bold text-base leading-none">Invoice Date:</p>
-                      <p className="text-white font-light leading-none">{invoiceDate}</p>
+                    <div key={pageIndex} style={S.page}>
+                        {/* Background */}
+                        <div style={S.bgWrap}>
+                            <Image src="/Assets/Invoice/Background.png" alt="Background" fill style={{ objectFit: "cover", objectPosition: "bottom" }} priority unoptimized />
+                        </div>
+                        <div style={S.blurTop} />
+                        <div style={S.blurBottom} />
+
+                        {/* Content */}
+                        <div style={S.content}>
+                            {/* Logo */}
+                            {isFirstPage && (
+                                <div style={{ marginBottom: "16px" }}>
+                                    <Image src="/Assets/Invoice/Logo.png" alt="Solustream Logo" width={140} height={38} priority style={{ objectFit: "contain" }} unoptimized />
+                                </div>
+                            )}
+
+                            {/* Header */}
+                            {isFirstPage && (
+                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px", width: "100%", paddingLeft: "4px", paddingRight: "8px" }}>
+                                    <div style={{ display: "flex", flexDirection: "column" }}>
+                                        <h1 style={{ fontSize: "44px", letterSpacing: "-0.02em", color: "#fff", fontWeight: 900, lineHeight: 1, marginBottom: "4px", margin: "0 0 4px" }}>INVOICE</h1>
+                                        <p style={{ fontSize: "20px", color: "#fff", fontWeight: 300, letterSpacing: "0.1em", marginBottom: "24px", margin: "0 0 24px" }}>
+                                            {invoiceNumber || "SOLU26-027"}
+                                        </p>
+                                        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                                            <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "18px", lineHeight: 1, margin: 0 }}>Invoice to:</h3>
+                                            <p style={{ color: "#fff", fontSize: "22px", fontWeight: 600, lineHeight: 1, margin: 0 }}>{clientName || "Raka Sanjaya"}</p>
+                                            <p style={{ color: "#fff", fontWeight: 300, fontSize: "16px", lineHeight: 1, margin: 0 }}>{clientPhone || "087777964411"}</p>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+                                        <p style={{ color: "#fff", fontWeight: 700, fontSize: "16px", lineHeight: "tight", margin: "0 0 16px" }}>Total Due:</p>
+                                        <h2 style={{ fontSize: "36px", color: "#fff", fontWeight: 300, marginBottom: "24px", lineHeight: 1, margin: "0 0 24px" }}>
+                                            Rp{grandTotal.toLocaleString("id-ID")}
+                                        </h2>
+                                        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "2px" }}>
+                                            <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "18px", lineHeight: 1, margin: 0 }}>Payment to:</h3>
+                                            <p style={{ color: "#fff", fontSize: "22px", fontWeight: 400, lineHeight: 1, margin: 0 }}>{bankAccount || "8415886230 (BCA)"}</p>
+                                            <p style={{ color: "#fff", fontWeight: 300, fontSize: "16px", lineHeight: 1, margin: 0 }}>{bankUser || "Pascal Arya Nugroho"}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Dates */}
+                            {isFirstPage && (
+                                <div style={{ display: "flex", gap: "48px", marginBottom: "24px", paddingLeft: "4px" }}>
+                                    <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                                        <p style={{ color: "#fff", fontWeight: 700, fontSize: "16px", lineHeight: 1, margin: 0 }}>Invoice Date:</p>
+                                        <p style={{ color: "#fff", fontWeight: 300, lineHeight: 1, margin: 0 }}>{invoiceDate}</p>
+                                    </div>
+                                    <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                                        <p style={{ color: "#fff", fontWeight: 700, fontSize: "16px", lineHeight: 1, margin: 0 }}>Due Date:</p>
+                                        <p style={{ color: "#fff", fontWeight: 300, lineHeight: 1, margin: 0 }}>{dueDate}</p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {!isFirstPage && <div style={{ marginTop: "32px" }} />}
+
+                            {/* Table */}
+                            <div style={{ flexGrow: 1, paddingLeft: "4px", paddingRight: "8px" }}>
+                                {/* Header Row */}
+                                <div style={{
+                                    display: "grid", gridTemplateColumns: "1fr 11fr",
+                                    gap: "8px", padding: "6px 32px", borderRadius: "15px",
+                                    border: "1px solid white", marginBottom: "8px",
+                                    alignItems: "center", backgroundColor: "rgba(217,217,217,0.1)"
+                                }}>
+                                    <div style={{ color: "#fff", fontSize: "16px", fontWeight: 700 }}>No.</div>
+                                    <div style={{ display: "grid", gridTemplateColumns: "5fr 2fr 1fr 3fr", gap: "8px" }}>
+                                        <div style={{ color: "#fff", fontSize: "16px", fontWeight: 700, paddingLeft: "8px" }}>Item Description</div>
+                                        <div style={{ color: "#fff", fontSize: "16px", fontWeight: 700, textAlign: "right" as const }}>Rate</div>
+                                        <div style={{ color: "#fff", fontSize: "16px", fontWeight: 700, textAlign: "center" as const }}>Qty</div>
+                                        <div style={{ color: "#fff", fontSize: "16px", fontWeight: 700, textAlign: "right" as const, paddingRight: "16px" }}>Total</div>
+                                    </div>
+                                </div>
+
+                                {/* Item Rows */}
+                                <div style={{ display: "flex", flexDirection: "column", gap: "6px", marginBottom: "8px" }}>
+                                    {pageItems.map((item, index) => {
+                                        const globalIndex = pages.slice(0, pageIndex).reduce((acc, p) => acc + p.length, 0) + index;
+                                        return (
+                                            <div key={item.id} style={{
+                                                display: "grid", gridTemplateColumns: "1fr 11fr",
+                                                gap: "8px", padding: "10px 24px", borderRadius: "12px",
+                                                border: "1px solid white", alignItems: "center"
+                                            }}>
+                                                <div style={{ color: "#fff", fontWeight: 400, fontSize: "16px" }}>
+                                                    {String(globalIndex + 1).padStart(2, "0")}
+                                                </div>
+                                                <div style={{ display: "grid", gridTemplateColumns: "5fr 2fr 1fr 3fr", gap: "8px", alignItems: "center" }}>
+                                                    <div style={{ paddingLeft: "8px", overflow: "hidden" }}>
+                                                        <p style={{ color: "#fff", fontWeight: 400, fontSize: "16px", lineHeight: "tight", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.name || "Item Name"}</p>
+                                                        <p style={{ color: "rgba(255,255,255,0.8)", fontWeight: 400, fontSize: "13px", lineHeight: "tight", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.description || "Item description"}</p>
+                                                    </div>
+                                                    <div style={{ color: "#fff", fontWeight: 400, textAlign: "right" as const, fontSize: "16px" }}>
+                                                        Rp{item.rate.toLocaleString("id-ID")}
+                                                    </div>
+                                                    <div style={{ color: "#fff", fontWeight: 400, textAlign: "center" as const, fontSize: "16px" }}>
+                                                        {item.quantity}
+                                                    </div>
+                                                    <div style={{ color: "#fff", fontWeight: 400, textAlign: "right" as const, paddingRight: "16px", fontSize: "16px" }}>
+                                                        Rp{(item.rate * item.quantity).toLocaleString("id-ID")}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                {/* Totals */}
+                                {isLastPage && (
+                                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "6px" }}>
+                                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 24px", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.3)", width: "300px", backgroundColor: "rgba(217,217,217,0.05)" }}>
+                                            <span style={{ color: "rgba(255,255,255,0.7)", fontWeight: 500, fontSize: "12px" }}>Subtotal</span>
+                                            <span style={{ color: "rgba(255,255,255,0.7)", fontWeight: 400, fontSize: "14px", paddingRight: "16px" }}>Rp{subtotal.toLocaleString("id-ID")}</span>
+                                        </div>
+                                        {discountAmount > 0 && (
+                                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 24px", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.3)", width: "300px", backgroundColor: "rgba(217,217,217,0.05)" }}>
+                                                <span style={{ color: "rgba(255,255,255,0.7)", fontWeight: 500, fontSize: "12px" }}>Discount</span>
+                                                <span style={{ color: "rgba(255,255,255,0.7)", fontWeight: 400, fontSize: "14px", paddingRight: "16px" }}>-Rp{discountAmount.toLocaleString("id-ID")}</span>
+                                            </div>
+                                        )}
+                                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 24px", borderRadius: "12px", border: "1px solid white", width: "300px", backgroundColor: "rgba(217,217,217,0.1)" }}>
+                                            <span style={{ color: "#fff", fontWeight: 700, fontSize: "14px" }}>Grand Total</span>
+                                            <span style={{ color: "#fff", fontWeight: 400, fontSize: "16px", paddingRight: "16px" }}>Rp{grandTotal.toLocaleString("id-ID")}</span>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Terms & Signature (inline) */}
+                                {isLastPage && !overflowTnC && (
+                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "48px", marginTop: "24px", alignItems: "flex-start" }}>
+                                        <div>
+                                            <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "16px", marginBottom: "4px", margin: "0 0 4px" }}>Syarat dan Ketentuan</h3>
+                                            <p style={{ color: "#fff", fontWeight: 400, fontSize: "14px", lineHeight: "tight", maxWidth: "280px", margin: 0 }}>
+                                                Pembayaran yang sudah dibayarkan dan/atau sudah disetujui sebelumnya tidak dapat di-refund
+                                                <br /><br />
+                                                Pengerjaan dan/atau book alat dilakukan setelah DP
+                                            </p>
+                                        </div>
+                                        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                                            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", width: "160px" }}>
+                                                <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "16px", marginBottom: "8px", margin: "0 0 8px" }}>Best Regards,</h3>
+                                                <div style={{ border: "1px solid rgba(255,255,255,0.5)", borderRadius: "12px", width: "100%", height: "100px", background: "transparent", marginBottom: "8px", position: "relative", overflow: "hidden" }}>
+                                                    <Image src="/Assets/Invoice/Signature.png" alt="Signature" fill style={{ objectFit: "contain", padding: "8px" }} unoptimized />
+                                                </div>
+                                                <p style={{ color: "#fff", fontWeight: 400, fontSize: "16px", margin: 0 }}>Daffa Yordan</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Footer */}
+                        <div style={{ position: "absolute", bottom: "12px", left: "-20px", width: "834px" }}>
+                            <Image src="/Assets/Invoice/Footer.png" alt="Footer" width={834} height={79} style={{ width: "100%", height: "auto" }} unoptimized />
+                        </div>
                     </div>
-                    <div className="flex flex-col gap-1">
-                      <p className="text-white font-bold text-base leading-none">Due Date:</p>
-                      <p className="text-white font-light leading-none">{dueDate}</p>
-                    </div>
-                  </div>
                 );
-              })()}
+            })}
 
-              {!isFirstPage && <div className="mt-8" />}
-
-              {/* Invoice Table */}
-              <div className="flex-grow pl-1 pr-2">
-                <div
-                  className="grid grid-cols-12 gap-x-2 px-8 py-1.5 rounded-[15px] border border-white mb-2 items-center"
-                  style={{ backgroundColor: "#D9D9D91A" }}
-                >
-                  <div className="col-span-1 text-white text-base font-bold">No.</div>
-                  <div className="col-span-11 grid grid-cols-11 gap-x-2">
-                    <div className="col-span-5 text-white text-base font-bold pl-2">Item Description</div>
-                    <div className="col-span-2 text-white text-base font-bold text-right">Rate</div>
-                    <div className="col-span-1 text-white text-base font-bold text-center">Qty</div>
-                    <div className="col-span-3 text-white text-base font-bold text-right pr-4">Total</div>
-                  </div>
-                </div>
-
-                <div className="space-y-1.5 mb-2">
-                  {pageItems.map((item, index) => {
-                    const globalIndex = pages.slice(0, pageIndex).reduce((acc, p) => acc + p.length, 0) + index;
-                    return (
-                      <div
-                        key={item.id}
-                        className="grid grid-cols-12 gap-x-2 px-6 py-2.5 rounded-[12px] border border-white items-center bg-transparent"
-                      >
-                        <div className="col-span-1 text-white font-normal text-base">
-                          {String(globalIndex + 1).padStart(2, "0")}
+            {/* Overflow TnC page */}
+            {overflowTnC && (
+                <div style={{ ...S.page, height: "1123px", pageBreakInside: "avoid" }}>
+                    <div style={S.bgWrap}>
+                        <Image src="/Assets/Invoice/Background.png" alt="Background" fill style={{ objectFit: "cover", objectPosition: "bottom" }} priority unoptimized />
+                    </div>
+                    <div style={{ ...S.blurTop, filter: "blur(300px)" }} />
+                    <div style={{ ...S.blurBottom, filter: "blur(300px)" }} />
+                    <div style={{ ...S.content, paddingTop: "80px", paddingLeft: "68px", paddingRight: "68px" }}>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "48px", marginTop: "40px", alignItems: "flex-start" }}>
+                            <div>
+                                <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "16px", margin: "0 0 4px" }}>Syarat dan Ketentuan</h3>
+                                <p style={{ color: "#fff", fontWeight: 400, fontSize: "14px", lineHeight: "tight", maxWidth: "280px", margin: 0 }}>
+                                    Pembayaran yang sudah dibayarkan dan/atau sudah disetujui sebelumnya tidak dapat di-refund
+                                    <br /><br />
+                                    Pengerjaan dan/atau book alat dilakukan setelah DP
+                                </p>
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", width: "160px" }}>
+                                    <h3 style={{ color: "#fff", fontWeight: 700, fontSize: "16px", margin: "0 0 8px" }}>Best Regards,</h3>
+                                    <div style={{ border: "1px solid rgba(255,255,255,0.5)", borderRadius: "12px", width: "100%", height: "100px", background: "transparent", marginBottom: "8px", position: "relative", overflow: "hidden" }}>
+                                        <Image src="/Assets/Invoice/Signature.png" alt="Signature" fill style={{ objectFit: "contain", padding: "8px" }} unoptimized />
+                                    </div>
+                                    <p style={{ color: "#fff", fontWeight: 400, fontSize: "16px", margin: 0 }}>Daffa Yordan</p>
+                                </div>
+                            </div>
                         </div>
-                        <div className="col-span-11 grid grid-cols-11 gap-x-2 items-center">
-                          <div className="col-span-5 pl-2 overflow-hidden">
-                            <p className="text-white font-normal text-base leading-tight mb-0 break-words line-clamp-1">{item.name || "Item Name"}</p>
-                            <p className="text-white/80 font-normal text-[13px] leading-tight break-words line-clamp-1">{item.description || "Item description"}</p>
-                          </div>
-                          <div className="col-span-2 text-white font-normal text-right text-base">
-                            Rp{item.rate.toLocaleString("id-ID")}
-                          </div>
-                          <div className="col-span-1 text-white font-normal text-center text-base">
-                            {item.quantity}
-                          </div>
-                          <div className="col-span-3 text-white font-normal text-right pr-4 text-base">
-                            Rp{(item.rate * item.quantity).toLocaleString("id-ID")}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
+                    </div>
+                    <div style={{ position: "absolute", bottom: "20px", left: "-20px", width: "834px" }}>
+                        <Image src="/Assets/Invoice/Footer.png" alt="Footer" width={834} height={79} style={{ width: "100%", height: "auto" }} unoptimized />
+                    </div>
                 </div>
-
-                {isLastPage && (
-                  <div className="flex flex-col items-end mb-2 mt-0 gap-1.5">
-                    <div
-                      className="flex justify-between items-center px-6 py-1.5 rounded-[10px] border border-white/30 w-[300px]"
-                      style={{ backgroundColor: "#D9D9D90D" }}
-                    >
-                      <span className="text-white/70 font-medium text-xs">Subtotal</span>
-                      <span className="text-white/70 font-normal text-sm pr-4">
-                        Rp{subtotal.toLocaleString("id-ID")}
-                      </span>
-                    </div>
-                    {discountAmount > 0 && (
-                      <div
-                        className="flex justify-between items-center px-6 py-1.5 rounded-[10px] border border-white/30 w-[300px]"
-                        style={{ backgroundColor: "#D9D9D90D" }}
-                      >
-                        <span className="text-white/70 font-medium text-xs">Discount</span>
-                        <span className="text-white/70 font-normal text-sm pr-4">
-                          -Rp{discountAmount.toLocaleString("id-ID")}
-                        </span>
-                      </div>
-                    )}
-                    <div
-                      className="flex justify-between items-center px-6 py-2 rounded-[12px] border border-white w-[300px]"
-                      style={{ backgroundColor: "#D9D9D91A" }}
-                    >
-                      <span className="text-white font-bold text-sm">Grand Total</span>
-                      <span className="text-white font-normal text-base pr-4">
-                        Rp{grandTotal.toLocaleString("id-ID")}
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                {isLastPage && !overflowTnC && (
-                  <div className="grid grid-cols-2 gap-12 mt-6 items-start">
-                    <div>
-                      <h3 className="text-white font-bold text-base mb-1">Syarat dan Ketentuan</h3>
-                      <p className="text-white font-normal text-sm leading-tight max-w-[280px]">
-                        Pembayaran yang sudah dibayarkan dan/atau sudah disetujui sebelumnya tidak dapat di-refund <br /><br />
-                        Pengerjaan dan/atau book alat dilakukan setelah DP
-                      </p>
-                    </div>
-                    <div className="flex justify-end">
-                      <div className="flex flex-col items-start w-[160px]">
-                        <h3 className="text-white font-bold text-base mb-2">Best Regards,</h3>
-                        <div className="border border-white/50 rounded-[12px] w-full h-[100px] bg-transparent mb-2 relative overflow-hidden flex items-center justify-center p-2">
-                          <Image
-                            src="/Assets/Invoice/Signature.png"
-                            alt="Signature"
-                            fill
-                            className="object-contain p-2"
-                            unoptimized
-                          />
-                        </div>
-                        <p className="text-white font-normal text-base">Daffa Yordan</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Footer */}
-            <div className="absolute bottom-3 -left-[20px] w-[834px]">
-              <Image
-                src="/Assets/Invoice/Footer.png"
-                alt="Footer"
-                width={834}
-                height={79}
-                className="w-full h-auto object-bottom"
-                unoptimized
-              />
-            </div>
-          </div>
-        );
-      })}
-
-      {/* Overflow TnC Page */}
-      {overflowTnC && (
-        <div
-          className="relative overflow-hidden shrink-0 pdf-page-canvas"
-          style={{ width: "794px", height: "1123px", pageBreakInside: "avoid" }}
-        >
-          <div className="absolute inset-x-0 bottom-0 z-0 h-[1123px] w-full pointer-events-none">
-            <Image src="/Assets/Invoice/Background.png" alt="Background" fill className="object-cover object-bottom" priority unoptimized />
-          </div>
-          <div className="absolute z-0 bg-black rounded-full pointer-events-none" style={{ width: "600px", height: "600px", left: "-200px", top: "-200px", filter: "blur(300px)", opacity: 1 }} />
-          <div className="absolute z-0 bg-black rounded-full pointer-events-none" style={{ width: "600px", height: "600px", left: "-200px", bottom: "-200px", filter: "blur(300px)", opacity: 1 }} />
-
-          <div className="relative z-10 pt-20 px-[68px] flex flex-col h-full pb-[100px]">
-            <div className="grid grid-cols-2 gap-12 mt-10 items-start">
-              <div>
-                <h3 className="text-white font-bold text-base mb-1">Syarat dan Ketentuan</h3>
-                <p className="text-white font-normal text-sm leading-tight max-w-[280px]">
-                  Pembayaran yang sudah dibayarkan dan/atau sudah disetujui sebelumnya tidak dapat di-refund <br /><br />
-                  Pengerjaan dan/atau book alat dilakukan setelah DP
-                </p>
-              </div>
-              <div className="flex justify-end">
-                <div className="flex flex-col items-start w-[160px]">
-                  <h3 className="text-white font-bold text-base mb-2">Best Regards,</h3>
-                  <div className="border border-white/50 rounded-[12px] w-full h-[100px] bg-transparent mb-2 relative overflow-hidden flex items-center justify-center p-2">
-                    <Image src="/Assets/Invoice/Signature.png" alt="Signature" fill className="object-contain p-2" unoptimized />
-                  </div>
-                  <p className="text-white font-normal text-base">Daffa Yordan</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="absolute bottom-5 -left-[20px] w-[834px]">
-            <Image src="/Assets/Invoice/Footer.png" alt="Footer" width={834} height={79} className="w-full h-auto object-bottom" unoptimized />
-          </div>
+            )}
         </div>
-      )}
-    </div>
-  );
+    );
 }
