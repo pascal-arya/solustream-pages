@@ -5,7 +5,7 @@
 
 /* ---- Reset & Base ---- */
 .board-root {
-  font-family: var(--font-inter), 'Inter', system-ui, sans-serif;
+  font-family: var(--font-plus-jakarta), 'Plus Jakarta Sans', system-ui, sans-serif;
   background: #f4f6fa;
   min-height: 100vh;
   color: #0f172a;
@@ -55,13 +55,13 @@
 }
 
 .board-tab:hover {
-  color: #0240BA;
+  color: #1e3a8a;
 }
 
 .board-tab.active {
-  background: linear-gradient(to top right, #060173 0%, #0240BA 100%);
+  background: #1e3a8a;
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(2, 64, 186, 0.25);
+  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.25);
 }
 
 /* ---- Main Content Area ---- */
@@ -75,21 +75,19 @@
 
 /* ---- Cards ---- */
 .board-card {
-  background: linear-gradient(to top right, #060173 0%, #0240BA 100%);
-  color: #ffffff;
+  background: #ffffff;
   border-radius: 20px;
-  box-shadow: 0 12px 36px rgba(2, 64, 186, 0.15);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06), 0 4px 24px rgba(15, 23, 42, 0.04);
   padding: 2rem;
-  border: none;
+  border: 1px solid #f1f5f9;
 }
 
 .board-card-sm {
-  background: linear-gradient(to top right, #060173 0%, #0240BA 100%);
-  color: #ffffff;
+  background: #ffffff;
   border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(2, 64, 186, 0.12);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06);
   padding: 1.5rem;
-  border: none;
+  border: 1px solid #f1f5f9;
 }
 
 /* ---- Form Layout ---- */
@@ -122,13 +120,13 @@
 .board-section-title {
   font-size: 1.125rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #0f172a;
   margin: 0 0 1.25rem;
 }
 
 .board-section-subtitle {
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: #94a3b8;
   font-weight: 500;
   margin: 0 0 1.5rem;
 }
@@ -138,32 +136,32 @@
   display: block;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
+  color: #475569;
   margin-bottom: 0.5rem;
 }
 
 .board-input {
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1.5px solid #e2e8f0;
   border-radius: 10px;
   font-size: 0.875rem;
   font-family: inherit;
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.1);
+  color: #0f172a;
+  background: #fafbff;
   outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s;
   box-sizing: border-box;
 }
 
 .board-input:focus {
-  border-color: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.15);
+  border-color: #1e3a8a;
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.08);
+  background: #ffffff;
 }
 
 .board-input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
+  color: #cbd5e1;
 }
 
 .board-grid-2 {
@@ -183,14 +181,14 @@
 .board-item-row {
   padding: 1rem 1.25rem;
   border-radius: 12px;
-  border: 1.5px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid #f1f5f9;
+  background: #f8fafc;
   position: relative;
   transition: border-color 0.15s;
 }
 
 .board-item-row:hover {
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: #e2e8f0;
 }
 
 /* ---- Action Buttons ---- */
@@ -199,8 +197,8 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.75rem;
-  background: #ffffff;
-  color: #0240BA;
+  background: #1e3a8a;
+  color: #ffffff;
   border: none;
   border-radius: 12px;
   font-size: 0.875rem;
@@ -208,12 +206,12 @@
   font-family: inherit;
   cursor: pointer;
   transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.25);
 }
 
 .board-btn-primary:hover {
-  background: #f8fafc;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  background: #1e40af;
+  box-shadow: 0 4px 16px rgba(30, 58, 138, 0.3);
   transform: translateY(-1px);
 }
 
@@ -233,7 +231,7 @@
   gap: 0.4rem;
   padding: 0.5rem 0.875rem;
   background: transparent;
-  color: #ffffff;
+  color: #1e3a8a;
   border: none;
   border-radius: 8px;
   font-size: 0.8125rem;
@@ -244,14 +242,14 @@
 }
 
 .board-btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: #eff6ff;
 }
 
 .board-btn-danger-ghost {
   display: inline-flex;
   align-items: center;
   background: transparent;
-  color: rgba(255, 255, 255, 0.7);
+  color: #cbd5e1;
   border: none;
   border-radius: 8px;
   font-size: 0.8125rem;
@@ -262,8 +260,8 @@
 }
 
 .board-btn-danger-ghost:hover {
-  color: #ff6b6b;
-  background: rgba(255, 0, 0, 0.1);
+  color: #ef4444;
+  background: #fef2f2;
 }
 
 /* ---- Toggle Tabs (discount type, mou mode) ---- */
@@ -271,9 +269,9 @@
   display: flex;
   gap: 0.25rem;
   padding: 0.25rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: #f1f5f9;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #e2e8f0;
 }
 
 .board-toggle-btn {
@@ -287,13 +285,13 @@
   cursor: pointer;
   transition: all 0.15s;
   background: transparent;
-  color: rgba(255, 255, 255, 0.6);
+  color: #94a3b8;
 }
 
 .board-toggle-btn.active {
-  background: #ffffff;
-  color: #0240BA;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  background: #1e3a8a;
+  color: #ffffff;
+  box-shadow: 0 1px 4px rgba(30, 58, 138, 0.2);
 }
 
 /* ---- Preview Column ---- */
@@ -307,7 +305,7 @@
 .board-preview-label {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.8);
+  color: #64748b;
 }
 
 .board-zoom-controls {
@@ -318,25 +316,25 @@
 
 .board-zoom-btn {
   padding: 0.3rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #e2e8f0;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.8);
+  background: #ffffff;
+  color: #94a3b8;
   cursor: pointer;
   transition: all 0.15s;
   display: flex;
 }
 
 .board-zoom-btn:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
+  color: #1e3a8a;
+  background: #f8faff;
+  border-color: #bfdbfe;
 }
 
 .board-zoom-label {
   font-size: 0.7rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.8);
+  color: #64748b;
   min-width: 2.5rem;
   text-align: center;
 }
@@ -345,13 +343,12 @@
   width: 100%;
   overflow: auto;
   max-height: calc(100vh - 280px);
-  background: #e2e8f0; /* Keeping preview background gray so white paper pops */
+  background: #e2e8f0;
   border-radius: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
   display: flex;
   justify-content: center;
   padding: 1.5rem;
-  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 /* ---- Total Bar ---- */
@@ -363,44 +360,42 @@
 
 .board-total-label {
   font-size: 0.8125rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: #64748b;
   font-weight: 500;
 }
 
 .board-total-amount {
   font-size: 1.5rem;
   font-weight: 800;
-  color: #ffffff;
+  color: #1e3a8a;
 }
 
 /* ---- Divider ---- */
 .board-divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.15);
+  background: #f1f5f9;
   margin: 1.25rem 0;
 }
 
 /* ---- Article (MoU clause) card ---- */
 .board-article-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: #ffffff;
   border-radius: 20px;
   padding: 1.5rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.05);
+  border: 1px solid #f1f5f9;
   transition: box-shadow 0.15s, border-color 0.15s;
   position: relative;
 }
 
 .board-article-card:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
 }
 
 .board-article-card.is-dragging {
-  opacity: 0.8;
-  border-color: #ffffff;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  background: rgba(255, 255, 255, 0.1);
+  opacity: 0.5;
+  border-color: #1e3a8a;
+  box-shadow: 0 8px 24px rgba(30, 58, 138, 0.15);
 }
 
 .board-article-card.is-hidden {
@@ -411,8 +406,8 @@
   width: 2.25rem;
   height: 2.25rem;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  background: rgba(30, 58, 138, 0.06);
+  color: #1e3a8a;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -436,8 +431,8 @@
 .board-auto-badge {
   font-size: 0.55rem;
   font-weight: 900;
-  background: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
+  background: #dbeafe;
+  color: #1d4ed8;
   padding: 0.2rem 0.4rem;
   border-radius: 5px;
   text-transform: uppercase;
@@ -448,14 +443,14 @@
 .board-add-article-btn {
   width: 100%;
   padding: 1.125rem;
-  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border: 2px dashed #e2e8f0;
   border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   background: transparent;
-  color: rgba(255, 255, 255, 0.7);
+  color: #94a3b8;
   font-size: 0.8125rem;
   font-weight: 700;
   font-family: inherit;
@@ -466,9 +461,9 @@
 }
 
 .board-add-article-btn:hover {
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.05);
+  color: #1e3a8a;
+  border-color: rgba(30, 58, 138, 0.25);
+  background: rgba(30, 58, 138, 0.03);
 }
 
 /* ---- Parties Grid ---- */
@@ -495,23 +490,23 @@
   text-align: left;
   font-size: 0.7rem;
   font-weight: 800;
-  color: rgba(255, 255, 255, 0.7);
+  color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid #f1f5f9;
 }
 
 .board-responses-table td {
   padding: 1rem;
   font-size: 0.875rem;
-  color: #ffffff;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: #334155;
+  border-bottom: 1px solid #f8fafc;
   vertical-align: top;
 }
 
 .board-responses-table tr:hover td {
-  background: rgba(255, 255, 255, 0.05);
+  background: #f8faff;
 }
 
 .board-responses-table tr:last-child td {
@@ -529,24 +524,24 @@
 }
 
 .board-score-pill.high {
-  background: rgba(22, 163, 74, 0.2);
-  color: #4ade80;
+  background: #dcfce7;
+  color: #16a34a;
 }
 
 .board-score-pill.mid {
-  background: rgba(202, 138, 4, 0.2);
-  color: #facc15;
+  background: #fef9c3;
+  color: #ca8a04;
 }
 
 .board-score-pill.low {
-  background: rgba(220, 38, 38, 0.2);
-  color: #f87171;
+  background: #fee2e2;
+  color: #dc2626;
 }
 
 .board-empty-state {
   text-align: center;
   padding: 4rem 2rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: #94a3b8;
 }
 
 .board-empty-state p {
@@ -558,8 +553,8 @@
   display: inline-block;
   width: 1.5rem;
   height: 1.5rem;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-top-color: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-top-color: #1e3a8a;
   border-radius: 50%;
   animation: board-spin 0.7s linear infinite;
 }
@@ -573,15 +568,15 @@
 /* ---- Reorder Arrows ---- */
 .board-reorder-group {
   display: flex;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
   border-radius: 8px;
   padding: 0.125rem;
 }
 
 .board-reorder-btn {
   padding: 0.25rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: #94a3b8;
   background: transparent;
   border: none;
   border-radius: 6px;
@@ -591,8 +586,8 @@
 }
 
 .board-reorder-btn:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.15);
+  color: #1e3a8a;
+  background: #ffffff;
 }
 
 .board-reorder-btn:disabled {

@@ -19,7 +19,7 @@
 
   --slider-track-bg: #c8c8c8;
 
-  --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-plus-jakarta: 'Plus Jakarta Sans', system-ui, sans-serif;
 
   --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.05);
   --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.02);
@@ -38,7 +38,7 @@ body {
   overflow-x: hidden;
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter);
+  font-family: var(--font-plus-jakarta);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -65,7 +65,7 @@ body {
 input,
 textarea,
 button {
-  font-family: var(--font-inter);
+  font-family: var(--font-plus-jakarta);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   outline: none;
 }
