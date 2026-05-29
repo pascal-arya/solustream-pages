@@ -1,0 +1,8 @@
+The layout and example is on Asset folder. Use logo on top of invoice.
+
+Font: Plus Jakarta Sans
+Background: Use background in Assets folder, make it align buttom no matter the size.
+Size: A4 but the height trimmed based on number of purchased items.
+Forms: Forms header use #D9D9D9 with 10% opacity, and the stroke were #FFFFFF. The items box are the same, but without fills.
+Footer: Footer are on assets folder. Match width of file, and align to bottom.
+Black blur: On top and bottom left there are black blur sphere to make the logo and text stand out. How it looks like without background are on Blur Scheme in Assets Folder

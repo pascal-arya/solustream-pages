@@ -1,0 +1,26 @@
+Details about invoicing form page
+
+Use logo in asset folder in top of page. On top of file shows grand total of purchase added to purchased item. Make it responsive. below, add button to download PDF of invoice, the guide on invoice styling is on Page Details folder.
+
+color Sheme: As example in asset folder
+Font: Plus Jakarta sans
+
+What user can fill:
+---
+Invoice number:
+
+Client Info
+Client name:
+Client phone number:
+
+Purchased Item
+Item name:
+Item description:
+Rate:
+Quantity:
+(User can add item)
+
+Payment methods
+Bank account number:
+Bank user:
+---
