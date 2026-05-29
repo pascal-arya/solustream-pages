@@ -82,7 +82,7 @@ export default function MoUPDF({
                 const isLastPage = pageIndex === pages.length - 1;
 
                 return (
-                    <div key={pageIndex} style={{ ...pageBase, height: `${PAGE_HEIGHT_TOTAL}px` }}>
+                    <div key={pageIndex} className="pdf-page-canvas" style={{ ...pageBase, height: `${PAGE_HEIGHT_TOTAL}px` }}>
                         {/* Background */}
                         <div style={{ position: "absolute", inset: 0, zIndex: 0, height: "1123px", width: "100%", pointerEvents: "none" }}>
                             <Image src="/Assets/Invoice/Background.png" alt="Background" fill style={{ objectFit: "cover", objectPosition: "bottom" }} priority unoptimized />

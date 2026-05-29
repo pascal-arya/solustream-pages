@@ -146,7 +146,7 @@ export default function InvoicePDF({
         const isFirstPage = pageIndex === 0;
         const isLastPage = pageIndex === pages.length - 1;
         return (
-          <div key={pageIndex} style={S.page}>
+          <div key={pageIndex} className="pdf-page-canvas" style={S.page}>
             {/* Background */}
             <div style={S.bgWrap}>
               <Image src="/Assets/Invoice/Background.png" alt="Background" fill style={{ objectFit: "cover", objectPosition: "bottom" }} priority unoptimized />
